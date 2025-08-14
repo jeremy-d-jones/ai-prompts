@@ -7,11 +7,15 @@
     "dev": "tsx src/cli/index.ts",
     "test": "vitest",
     "lint": "eslint .",
-    "cli": "node dist/cli/index.js"
+    "cli": "node dist/cli/index.js",
+    "ui:dev": "vite",
+    "ui:build": "vite build"
   },
   "dependencies": {
     "commander": "^11.0.0",
-    "inquirer": "^9.0.0"
+    "inquirer": "^9.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
@@ -19,6 +23,10 @@
     "vitest": "^0.34.4",
     "eslint": "^8.53.0",
     "@typescript-eslint/parser": "^6.7.5",
-    "@typescript-eslint/eslint-plugin": "^6.7.5"
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@types/react": "^18.2.27",
+    "@types/react-dom": "^18.2.12",
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.0.0"
   }
 }
