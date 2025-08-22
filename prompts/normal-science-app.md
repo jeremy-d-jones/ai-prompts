@@ -2,6 +2,8 @@
 
 You are an expert full-stack engineer. Build a minimal app that runs locally on my laptop with production-ready architecture for AWS deployment.
 
+**IMPORTANT**: When you create any code or files, save this exact prompt as `original-prompt-$(git rev-parse --short HEAD).md` in the root directory of the project to preserve the original instructions with version tracking.
+
 ## Architecture Overview
 
 - Two directories: `/web` and `/api`
@@ -29,8 +31,8 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - **Performance**: Optimize bundle size, lazy load components if needed, basic image optimization
 
 ### Design System Requirements
-- **Company Branding**: "The Normal Science Company" (not "Normal Science App")
-- **No Slogans**: Remove any marketing slogans or taglines
+- **Company Branding**: "The Normal Science Company" (not "Normal Science App") - must appear on one line
+- **No Taglines**: No descriptive text, slogans, or subtitles under the company heading
 - **Color Scheme**: Must match normalscience.com's current design language
 - **Typography**: Consistent with normalscience.com's font choices
 - **Layout**: Maintain visual consistency with existing site design
@@ -47,7 +49,7 @@ Use provided SVG noise pattern as background across all pages:
       <feFuncA type="linear" slope="0.4" />
     </feComponentTransfer>
   </filter>
-  <rect width="100%" height="100%" filter="url(#noise)" fill="#e5e7eb" />
+  <rect width="100%" height="100%" filter="url(#noise)" fill="#f5f1e8" />
 </svg>
 ```
 - Apply as CSS background pattern with higher visibility (0.4 slope)
@@ -153,6 +155,7 @@ Use provided SVG noise pattern as background across all pages:
 ### Directory Structure
 ```
 /
+├── original-prompt-{git-hash}.md  # This exact prompt with version tracking
 ├── web/
 │   ├── package.json
 │   ├── tsconfig.json
@@ -179,6 +182,7 @@ Use provided SVG noise pattern as background across all pages:
 ```
 
 ### Required Files
+- **original-prompt-{git-hash}.md**: This exact prompt saved with git commit hash for version tracking
 - All configuration files (package.json, tsconfig.json, etc.)
 - All source files with proper imports and paths
 - README.md with local development instructions
@@ -195,6 +199,7 @@ Use provided SVG noise pattern as background across all pages:
 - Accessibility requirements met
 - **Design matches normalscience.com's visual language**
 - **Background texture is clearly visible and matches reference site**
+- **No taglines or descriptive text under company heading**
 
 ## Local Development Instructions
 
@@ -242,4 +247,4 @@ Use provided SVG noise pattern as background across all pages:
 
 ---
 
-**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality.
+**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality. The company heading must appear on one line with no taglines or descriptive text underneath.
