@@ -2,7 +2,7 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 
 - Two directories: `/web` and `/api`.
 - `/web` is a React + Vite + TypeScript app with Tailwind. It shows:
-  - Landing page with a "Login" button (fake login, just sets a session variable in memory).
+  - Landing page with a "Login" button (simulates AWS Cognito authentication with mock SDK).
   - Welcome page after login that displays "Welcome, Test User" and a "Logout" button.
   - Chat page with a textbox, Send button, and transcript area. It calls the backend at POST /api/chat and displays the response.
 - `/api` is a Node 20 + Express server with routes:
@@ -41,7 +41,7 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 **Deliverables:**
 - Directory tree
 - /web files:  
-  package.json, tsconfig.json, vite.config.ts, tailwind.config.js, postcss.config.js, index.html, src/main.tsx, src/App.tsx, src/pages/{Landing.tsx,Welcome.tsx,Chat.tsx}, src/lib/session.ts
+  package.json, tsconfig.json, vite.config.ts, tailwind.config.js, postcss.config.js, index.html, src/main.tsx, src/App.tsx, src/pages/{Landing.tsx,Welcome.tsx,Chat.tsx}, src/lib/auth.ts
 - /api files:  
   package.json, tsconfig.json, src/index.ts, src/routes/chat.ts
 - README.md with local instructions:  
@@ -54,3 +54,11 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - CORS restricted to http://localhost:5173.
 - Chat page handles error states.
 - No external services, env vars, or secrets required.
+
+**Authentication (Mock Cognito):**
+- Simulate AWS Cognito authentication flow:
+  - Mock Cognito SDK calls (signIn, signOut, getCurrentUser)
+  - Handle async authentication with loading states
+  - Store user session in memory (simulating Cognito tokens)
+  - TypeScript interfaces matching Cognito user structure
+  - Error handling for auth failures (invalid credentials, network errors)
