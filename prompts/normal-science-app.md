@@ -11,6 +11,51 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - Mock AWS Cognito authentication (ready for real Cognito integration)
 - **Design Language**: Must match normalscience.com's current design system
 
+## Design System
+
+### Colors
+- **Parchment**: `#f5f1e8` (background)
+- **Ink**: `#2d2d2d` (primary text)
+- **Sunlight**: `#e2c275` (accent)
+- **Navy**: `#274060` (supplemental)
+- **Dark Green**: `#2d5a27` (supplemental)
+- **Maroon**: `#6a0f17` (supplemental)
+
+### Typography
+- **Headings**: Fira Sans
+- **Body**: IBM Plex Serif
+
+### Tailwind Configuration
+```javascript
+module.exports = {
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        parchment: '#f5f1e8',
+        ink: '#2d2d2d',
+        sunlight: '#e2c275',
+        navy: '#274060',
+        'dark-green': '#2d5a27',
+        maroon: '#6a0f17',
+      },
+      fontFamily: {
+        'heading': ['Fira Sans', 'sans-serif'],
+        'body': ['IBM Plex Serif', 'serif'],
+      }
+    }
+  }
+}
+```
+
+### Font Loading
+```html
+<!-- In index.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap" rel="stylesheet">
+```
+
 ## Frontend (/web) - React + Vite + TypeScript + Tailwind
 
 ### Pages & Features
@@ -75,6 +120,17 @@ Use provided SVG noise pattern as background across all pages:
 - **Validation**: Validate request structure, return 400 for invalid requests, 500 for server errors
 - **Error Handling**: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
 - **Logging**: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
+
+### Security Requirements
+- **Input Validation**: Validate chat messages (length, content, format)
+  ```typescript
+  const validateChatInput = (prompt: string) => {
+    if (!prompt || prompt.length > 1000) throw new Error('Invalid input');
+    // Add more validation rules as needed
+  }
+  ```
+- **Rate Limiting**: Implement rate limiting on chat endpoint
+- **Authentication**: Secure mock authentication implementation
 
 ## Authentication (Mock Cognito)
 
