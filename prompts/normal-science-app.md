@@ -1,64 +1,201 @@
-You are an expert full-stack engineer. Build a minimal app that runs locally on my laptop. Requirements:
+# Normal Science App - Full Stack Development Specification
 
-- Two directories: `/web` and `/api`.
-- `/web` is a React + Vite + TypeScript app with Tailwind. It shows:
-  - Landing page with a "Login" button (simulates AWS Cognito authentication with mock SDK).
-  - Welcome page after login that displays "Welcome, Test User" and a "Logout" button.
-  - Chat page with a textbox, Send button, and transcript area. It calls the backend at POST /api/chat and displays the response.
-- `/api` is a Node 20 + Express server with routes:
-  - GET /healthz → return `{ status: "ok" }`.
-  - POST /api/chat → accept `{ prompt: string }` and return `{ reply: "Placeholder response", prompt }`.
-- Enable CORS so the React app can call the API during local dev. Lock origin to `http://localhost:5173`.
+You are an expert full-stack engineer. Build a minimal app that runs locally on my laptop with production-ready architecture for AWS deployment.
 
-**Dependencies for /web:**
-  react, react-dom, vite, typescript, @vitejs/plugin-react, tailwindcss, postcss, autoprefixer  
-  Dev dependencies: @types/react, @types/react-dom  
+## Architecture Overview
 
-**Dependencies for /api:**
-  express, cors  
-  Dev dependencies: typescript, ts-node, nodemon, @types/express, @types/cors  
+- Two directories: `/web` and `/api`
+- Production deployment to `normalscience.com` domain
+- Mock AWS Cognito authentication (ready for real Cognito integration)
 
-**Conventions and Notes:**
-1. Use CommonJS for `/api` TypeScript config (no `"type": "module"`). Compile to `dist` with `outDir`.
-2. For `/web/tsconfig.json`, set `"jsx": "react-jsx"` and `"moduleResolution": "Bundler"`.
-3. Tailwind config: include `content: ["./index.html", "./src/**/*.{ts,tsx}"]`.
-4. In `/api/src/index.ts`, mount the chat router:  
-   `app.use("/api", require("./routes/chat"));`
-5. Keep environment simple: hardcode ports 5173 (web dev) and 4000 (api). No env files.
-6. Basic error handling only. No extra middleware.
-7. Provide a Vite dev proxy for `/api` → `http://localhost:4000` so the front end works without CORS during dev. Keep CORS in API for clarity.
+## Frontend (/web) - React + Vite + TypeScript + Tailwind
 
-**Scripts:**
-- /web:  
-  - "dev": "vite --port 5173"  
-  - "build": "vite build"  
-  - "preview": "vite preview --port 5173"  
-- /api:  
-  - "dev": "nodemon src/index.ts"  
-  - "build": "tsc"  
-  - "start": "node dist/index.js"  
+### Pages & Features
+- **Landing page**: Login button (simulates AWS Cognito authentication)
+- **Welcome page**: "Welcome, Test User" with logout button
+- **Chat page**: Textbox, Send button, transcript area
+  - Messages are ephemeral (not persisted)
+  - Calls POST /api/chat and displays response
+  - Handles API failures with user-friendly error messages
+  - Disables Send button during API calls
 
-**Deliverables:**
-- Directory tree
-- /web files:  
-  package.json, tsconfig.json, vite.config.ts, tailwind.config.js, postcss.config.js, index.html, src/main.tsx, src/App.tsx, src/pages/{Landing.tsx,Welcome.tsx,Chat.tsx}, src/lib/auth.ts
-- /api files:  
-  package.json, tsconfig.json, src/index.ts, src/routes/chat.ts
-- README.md with local instructions:  
-  1. cd api && npm install && npm run dev (runs on http://localhost:4000)  
-  2. cd web && npm install && npm run dev (runs on http://localhost:5173)  
-  3. Open browser to http://localhost:5173, click Login, go to Welcome, then Chat. Send a message and confirm reply.
+### Technical Requirements
+- **State Management**: React Context for global state (authentication, user session), local state for component-specific data
+- **Error Handling**: Wrap main App component in React error boundary with fallback UI and reload option
+- **Loading States**: Show loading indicators during async operations (login, API calls), disable buttons during operations
+- **Accessibility**: Semantic HTML elements, alt text for images, keyboard navigation, basic ARIA labels, color contrast ratios
+- **Responsive Design**: Mobile-first approach using Tailwind responsive utilities across mobile, tablet, and desktop breakpoints
+- **Performance**: Optimize bundle size, lazy load components if needed, basic image optimization
 
-**Quality gates:**
-- All file imports and paths correct.
-- CORS restricted to http://localhost:5173.
-- Chat page handles error states.
-- No external services, env vars, or secrets required.
+### Background Design
+Use provided SVG noise pattern as background across all pages:
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <filter id="noise">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+    <feColorMatrix type="saturate" values="0" />
+    <feComponentTransfer>
+      <feFuncA type="linear" slope="0.15" />
+    </feComponentTransfer>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#noise)" />
+</svg>
+```
+- Apply as CSS background pattern
+- Ensure proper contrast with text content
+- Optimize for performance (consider base64 encoding)
 
-**Authentication (Mock Cognito):**
-- Simulate AWS Cognito authentication flow:
-  - Mock Cognito SDK calls (signIn, signOut, getCurrentUser)
-  - Handle async authentication with loading states
-  - Store user session in memory (simulating Cognito tokens)
-  - TypeScript interfaces matching Cognito user structure
-  - Error handling for auth failures (invalid credentials, network errors)
+## Backend (/api) - Node 20 + Express + TypeScript
+
+### API Endpoints
+- **GET /healthz**: `{ success: true, data: { status: "ok" }, timestamp: string }`
+- **POST /api/chat**: Accept `{ prompt: string }`, return standardized response format:
+  ```typescript
+  {
+    success: boolean,
+    data?: { reply: string, prompt: string },
+    error?: string,
+    timestamp: string
+  }
+  ```
+
+### Technical Requirements
+- **Validation**: Validate request structure, return 400 for invalid requests, 500 for server errors
+- **Error Handling**: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
+- **Logging**: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
+
+## Authentication (Mock Cognito)
+
+- **Mock SDK**: Simulate AWS Cognito authentication flow with signIn, signOut, getCurrentUser
+- **Session Management**: React Context for in-memory session storage, expires on page refresh
+- **Token Expiration**: Mock tokens expire after 1 hour, redirect to login and clear session when expired
+- **Loading States**: Handle async authentication with loading states
+- **Error Handling**: Auth failures (invalid credentials, network errors)
+- **TypeScript**: Interfaces matching Cognito user structure
+
+## Environment & Configuration
+
+### Development
+- **CORS**: Local development only - origin http://localhost:5173, methods GET/POST
+- **Proxy**: Vite dev proxy `/api` → `http://localhost:4000`
+- **Ports**: Hardcoded 5173 (web) and 4000 (api)
+
+### Production
+- **Domain**: normalscience.com (eliminates CORS requirement)
+- **Environment Detection**: Use NODE_ENV for environment-specific configurations
+- **No Proxy**: Same-domain deployment
+
+## Dependencies
+
+### /web Dependencies
+- **Core**: react, react-dom, vite, typescript, @vitejs/plugin-react, tailwindcss, postcss, autoprefixer
+- **Dev**: @types/react, @types/react-dom
+- **Testing**: playwright, @playwright/test
+
+### /api Dependencies
+- **Core**: express, cors
+- **Dev**: typescript, ts-node, nodemon, @types/express, @types/cors
+
+## Configuration
+
+### TypeScript
+- **Strict Mode**: Enable strict mode (strict: true, noImplicitAny: true, strictNullChecks: true) in both /web and /api
+- **/web**: jsx: "react-jsx", moduleResolution: "Bundler"
+- **/api**: CommonJS (no "type": "module"), compile to dist with outDir
+
+### Tailwind
+- **Content**: ["./index.html", "./src/**/*.{ts,tsx}"]
+- **Responsive**: Mobile-first with Tailwind utilities
+
+### Build Outputs
+- **/web/dist/**: Vite build output
+- **/api/dist/**: TypeScript compilation
+- **Gitignore**: Both directories
+
+## Scripts
+
+### /web Scripts
+- `"dev": "vite --port 5173"`
+- `"build": "vite build"`
+- `"preview": "vite preview --port 5173"`
+- `"test:e2e": "playwright test"`
+
+### /api Scripts
+- `"dev": "nodemon src/index.ts"`
+- `"build": "tsc"`
+- `"start": "node dist/index.js"`
+
+## Testing
+
+### E2E Testing (Playwright)
+- Test navigation between Landing → Welcome → Chat pages
+- Test login flow (click login, verify welcome page)
+- Test chat functionality (send message, verify response)
+- Test logout flow (click logout, verify return to landing)
+- Test error states and API failures
+- Runs in headless mode for CI/CD compatibility
+
+## Deliverables
+
+### Directory Structure
+```
+/
+├── web/
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── index.html
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       ├── pages/
+│       │   ├── Landing.tsx
+│       │   ├── Welcome.tsx
+│       │   └── Chat.tsx
+│       └── lib/
+│           └── auth.ts
+├── api/
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── index.ts
+│       └── routes/
+│           └── chat.ts
+└── README.md
+```
+
+### Required Files
+- All configuration files (package.json, tsconfig.json, etc.)
+- All source files with proper imports and paths
+- README.md with local development instructions
+
+## Quality Gates
+
+- All file imports and paths correct
+- CORS restricted to http://localhost:5173 in development
+- Chat page handles error states properly
+- No external services, env vars, or secrets required
+- E2E tests pass in headless mode
+- TypeScript strict mode enabled and no errors
+- Responsive design works across breakpoints
+- Accessibility requirements met
+
+## Local Development Instructions
+
+1. `cd api && npm install && npm run dev` (runs on http://localhost:4000)
+2. `cd web && npm install && npm run dev` (runs on http://localhost:5173)
+3. Open browser to http://localhost:5173
+4. Click Login → Welcome → Chat
+5. Send a message and confirm response
+6. Run `npm run test:e2e` to verify functionality
+
+## Future Enhancements
+
+- Real AWS Cognito integration
+- CloudWatch logging implementation
+- Production environment configurations
+- Advanced error handling and retry logic
+- Performance monitoring and optimization
+- CI/CD pipeline setup 
