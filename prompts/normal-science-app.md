@@ -7,17 +7,18 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - Two directories: `/web` and `/api`
 - Production deployment to `normalscience.com` domain
 - Mock AWS Cognito authentication (ready for real Cognito integration)
+- **Design Language**: Must match normalscience.com's current design system
 
 ## Frontend (/web) - React + Vite + TypeScript + Tailwind
 
 ### Pages & Features
 - **Landing page**: Login button (simulates AWS Cognito authentication)
-- **Welcome page**: "Welcome, Test User" with logout button
-- **Chat page**: Textbox, Send button, transcript area
+- **Chat page**: Textbox, Send button, transcript area (protected content)
   - Messages are ephemeral (not persisted)
   - Calls POST /api/chat and displays response
   - Handles API failures with user-friendly error messages
   - Disables Send button during API calls
+  - **Direct access after login** (no intermediate welcome page)
 
 ### Technical Requirements
 - **State Management**: React Context for global state (authentication, user session), local state for component-specific data
@@ -27,23 +28,32 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - **Responsive Design**: Mobile-first approach using Tailwind responsive utilities across mobile, tablet, and desktop breakpoints
 - **Performance**: Optimize bundle size, lazy load components if needed, basic image optimization
 
+### Design System Requirements
+- **Company Branding**: "The Normal Science Company" (not "Normal Science App")
+- **No Slogans**: Remove any marketing slogans or taglines
+- **Color Scheme**: Must match normalscience.com's current design language
+- **Typography**: Consistent with normalscience.com's font choices
+- **Layout**: Maintain visual consistency with existing site design
+- **Background**: Subtle texture overlay that matches normalscience.com's background treatment
+
 ### Background Design
 Use provided SVG noise pattern as background across all pages:
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
   <filter id="noise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
     <feColorMatrix type="saturate" values="0" />
     <feComponentTransfer>
-      <feFuncA type="linear" slope="0.15" />
+      <feFuncA type="linear" slope="0.4" />
     </feComponentTransfer>
   </filter>
-  <rect width="100%" height="100%" filter="url(#noise)" />
+  <rect width="100%" height="100%" filter="url(#noise)" fill="#e5e7eb" />
 </svg>
 ```
-- Apply as CSS background pattern
+- Apply as CSS background pattern with higher visibility (0.4 slope)
 - Ensure proper contrast with text content
 - Optimize for performance (consider base64 encoding)
+- **Must match normalscience.com's background treatment**
 
 ## Backend (/api) - Node 20 + Express + TypeScript
 
@@ -72,6 +82,7 @@ Use provided SVG noise pattern as background across all pages:
 - **Loading States**: Handle async authentication with loading states
 - **Error Handling**: Auth failures (invalid credentials, network errors)
 - **TypeScript**: Interfaces matching Cognito user structure
+- **Direct Redirect**: After login, redirect directly to protected chat content (no intermediate pages)
 
 ## Environment & Configuration
 
@@ -106,6 +117,7 @@ Use provided SVG noise pattern as background across all pages:
 ### Tailwind
 - **Content**: ["./index.html", "./src/**/*.{ts,tsx}"]
 - **Responsive**: Mobile-first with Tailwind utilities
+- **Custom Colors**: Extend with normalscience.com's color palette
 
 ### Build Outputs
 - **/web/dist/**: Vite build output
@@ -128,11 +140,12 @@ Use provided SVG noise pattern as background across all pages:
 ## Testing
 
 ### E2E Testing (Playwright)
-- Test navigation between Landing → Welcome → Chat pages
-- Test login flow (click login, verify welcome page)
+- Test navigation: Landing → Chat (direct after login)
+- Test login flow (click login, verify chat page access)
 - Test chat functionality (send message, verify response)
 - Test logout flow (click logout, verify return to landing)
 - Test error states and API failures
+- Test design consistency with normalscience.com
 - Runs in headless mode for CI/CD compatibility
 
 ## Deliverables
@@ -152,7 +165,6 @@ Use provided SVG noise pattern as background across all pages:
 │       ├── App.tsx
 │       ├── pages/
 │       │   ├── Landing.tsx
-│       │   ├── Welcome.tsx
 │       │   └── Chat.tsx
 │       └── lib/
 │           └── auth.ts
@@ -181,15 +193,41 @@ Use provided SVG noise pattern as background across all pages:
 - TypeScript strict mode enabled and no errors
 - Responsive design works across breakpoints
 - Accessibility requirements met
+- **Design matches normalscience.com's visual language**
+- **Background texture is clearly visible and matches reference site**
 
 ## Local Development Instructions
 
 1. `cd api && npm install && npm run dev` (runs on http://localhost:4000)
 2. `cd web && npm install && npm run dev` (runs on http://localhost:5173)
 3. Open browser to http://localhost:5173
-4. Click Login → Welcome → Chat
+4. Click Login → Chat (direct access to protected content)
 5. Send a message and confirm response
 6. Run `npm run test:e2e` to verify functionality
+
+## Design Integration Requirements
+
+### Color Scheme
+- **Primary Colors**: Must match normalscience.com's primary color palette
+- **Background Colors**: Match the existing site's background treatment
+- **Text Colors**: Ensure proper contrast ratios with normalscience.com's color scheme
+- **Accent Colors**: Use normalscience.com's accent colors for interactive elements
+
+### Typography
+- **Font Family**: Match normalscience.com's font choices
+- **Font Weights**: Use consistent font weight hierarchy
+- **Font Sizes**: Maintain typographic scale from reference site
+
+### Layout & Spacing
+- **Grid System**: Follow normalscience.com's layout patterns
+- **Spacing**: Use consistent spacing scale
+- **Component Sizing**: Match existing component dimensions
+
+### Interactive Elements
+- **Button Styles**: Match normalscience.com's button design
+- **Form Elements**: Use consistent input styling
+- **Hover States**: Match existing hover interactions
+- **Focus States**: Ensure accessibility while maintaining design consistency
 
 ## Future Enhancements
 
@@ -198,4 +236,10 @@ Use provided SVG noise pattern as background across all pages:
 - Production environment configurations
 - Advanced error handling and retry logic
 - Performance monitoring and optimization
-- CI/CD pipeline setup 
+- CI/CD pipeline setup
+- **LLM Integration**: Replace mock chat with real AI-powered responses
+- **Design System**: Create comprehensive design tokens matching normalscience.com
+
+---
+
+**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality.
