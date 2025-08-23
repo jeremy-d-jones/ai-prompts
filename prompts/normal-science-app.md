@@ -81,35 +81,26 @@ module.exports = {
 - **Color Scheme**: Must match normalscience.com's current design language
 - **Typography**: Consistent with normalscience.com's font choices
 - **Layout**: Maintain visual consistency with existing site design
-- **Background**: Visible texture overlay that matches normalscience.com's background treatment
+- **Background**: Artistic representation of the double-slit experiment photon detection pattern
 
 ### Background Texture Implementation
-- **Texture Type**: Must use CSS-based noise texture, NOT SVG data URLs
-- **Visibility**: Texture must be clearly visible and not subtle - use opacity values between 0.04-0.12
-- **Technique**: Use multiple radial gradients with varied opacities and positions
-- **Layers**: Minimum 6-8 gradient layers for density
-- **Cross-hatch**: Include diagonal line overlays for additional texture
-- **Testing**: Texture must be visible on first load without browser cache clearing
-- **Fallback**: If CSS gradients fail, implement as base64 encoded PNG noise pattern
-- **Browser Compatibility**: Must work in Chrome, Firefox, Safari without special handling
+The background represents the photon detection pattern from the double-slit experiment - where individual photons create an interference pattern over time. This creates a subtle, artistic representation of quantum mechanics.
 
-### Background CSS Implementation
 ```css
 body {
   background-color: #f5f1e8;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(45, 45, 45, 0.12) 1px, transparent 1px),
-    radial-gradient(circle at 85% 85%, rgba(45, 45, 45, 0.10) 1px, transparent 1px),
-    radial-gradient(circle at 35% 65%, rgba(45, 45, 45, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 65% 35%, rgba(45, 45, 45, 0.06) 1px, transparent 1px),
-    radial-gradient(circle at 5% 45%, rgba(45, 45, 45, 0.05) 1px, transparent 1px),
-    radial-gradient(circle at 95% 55%, rgba(45, 45, 45, 0.05) 1px, transparent 1px),
-    radial-gradient(circle at 25% 75%, rgba(45, 45, 45, 0.04) 1px, transparent 1px),
-    radial-gradient(circle at 75% 25%, rgba(45, 45, 45, 0.04) 1px, transparent 1px);
-  background-size: 30px 30px, 45px 45px, 60px 60px, 75px 75px, 90px 90px, 105px 105px, 120px 120px, 135px 135px;
-  background-position: 0 0, 15px 15px, 30px 30px, 45px 45px, 60px 60px, 75px 75px, 90px 90px, 105px 105px;
+    radial-gradient(circle at 20% 30%, rgba(45, 45, 45, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(45, 45, 45, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 40% 60%, rgba(45, 45, 45, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 60% 40%, rgba(45, 45, 45, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 10% 80%, rgba(45, 45, 45, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 90% 20%, rgba(45, 45, 45, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px, 60px 60px, 80px 80px, 100px 100px, 120px 120px, 140px 140px;
+  background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px, 100px 100px;
 }
 
+/* Subtle interference pattern overlay */
 body::before {
   content: '';
   position: fixed;
@@ -118,8 +109,7 @@ body::before {
   width: 100%;
   height: 100%;
   background-image: 
-    repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(45, 45, 45, 0.02) 3px, rgba(45, 45, 45, 0.02) 6px),
-    repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(45, 45, 45, 0.015) 3px, rgba(45, 45, 45, 0.015) 6px);
+    repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(45, 45, 45, 0.015) 4px, rgba(45, 45, 45, 0.015) 8px);
   pointer-events: none;
   z-index: -1;
 }
@@ -130,7 +120,7 @@ body::before {
 - Verify texture is visible on first page load
 - Test with different screen resolutions
 - Ensure texture doesn't interfere with text readability
-- Verify texture matches normalscience.com's paper-like appearance
+- Verify texture creates the intended quantum interference pattern effect
 - **CRITICAL**: Texture must be immediately visible without cache clearing or hard refresh
 
 ## Backend (/api) - Node 20 + Express + TypeScript
@@ -148,19 +138,27 @@ body::before {
   ```
 
 ### Technical Requirements
-- **Validation**: Validate request structure, return 400 for invalid requests, 500 for server errors
+- **Validation**: Basic input validation for chat messages (length, content type)
 - **Error Handling**: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
 - **Logging**: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
 
 ### Security Requirements
-- **Input Validation**: Validate chat messages (length, content, format)
+- **Input Validation**: Basic validation for chat messages
   ```typescript
   const validateChatInput = (prompt: string) => {
-    if (!prompt || prompt.length > 1000) throw new Error('Invalid input');
-    // Add more validation rules as needed
+    if (!prompt || typeof prompt !== 'string') {
+      throw new Error('Invalid input: prompt must be a non-empty string');
+    }
+    if (prompt.length > 1000) {
+      throw new Error('Invalid input: prompt too long (max 1000 characters)');
+    }
+    // Basic content validation
+    if (prompt.trim().length === 0) {
+      throw new Error('Invalid input: prompt cannot be empty');
+    }
   }
   ```
-- **Rate Limiting**: Implement rate limiting on chat endpoint
+- **Rate Limiting**: Basic rate limiting on chat endpoint (100 requests per minute per IP)
 - **Authentication**: Secure AWS Cognito authentication implementation
 
 ## Authentication (AWS Cognito)
@@ -170,8 +168,9 @@ body::before {
 #### Global Environment (Add to ~/.zshrc)
 ```bash
 # Normal Science App Cognito Configuration
-export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g"
-export NORMAL_SCIENCE_COGNITO_CLIENT_ID="2cdco3vv7ka931ltfl9lsm4jr"
+# Replace these placeholder values with your actual Cognito credentials
+export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID"
+export NORMAL_SCIENCE_COGNITO_CLIENT_ID="YOUR_CLIENT_ID"
 export NORMAL_SCIENCE_COGNITO_DOMAIN="https://auth.normalscience.com"
 ```
 
@@ -227,8 +226,11 @@ const getAuthConfig = async () => {
       client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
       redirect_uri: "http://localhost:5173/auth/callback",
       response_type: "code",
-      scope: "phone openid email",
+      scope: "openid email",
       post_logout_redirect_uri: "http://localhost:5173/",
+      loadUserInfo: false,
+      automaticSilentRenew: true,
+      silent_redirect_uri: "http://localhost:5173/silent-renew.html",
     };
   } else {
     // Use Parameter Store for production
@@ -240,8 +242,11 @@ const getAuthConfig = async () => {
       client_id: clientId,
       redirect_uri: "https://normalscience.com/auth/callback",
       response_type: "code",
-      scope: "phone openid email",
+      scope: "openid email",
       post_logout_redirect_uri: "https://normalscience.com/",
+      loadUserInfo: false,
+      automaticSilentRenew: true,
+      silent_redirect_uri: "https://normalscience.com/silent-renew.html",
     };
   }
 };
@@ -255,13 +260,9 @@ const getAuthConfig = async () => {
 - **Callback URLs**:
   - `http://localhost:5173/auth/callback` (development)
   - `https://normalscience.com/auth/callback` (production)
-  - `https://app.normalscience.com/auth/callback`
-  - `https://www.normalscience.com/auth/callback`
 - **Sign-out URLs**:
   - `http://localhost:5173/` (development)
   - `https://normalscience.com/` (production)
-  - `https://app.normalscience.com/`
-  - `https://www.normalscience.com/`
 
 ### Dependencies Required
 ```json
@@ -285,34 +286,12 @@ const getAuthConfig = async () => {
 - **TypeScript**: Interfaces matching Cognito user structure
 - **Direct Redirect**: After login, redirect directly to protected chat content (no intermediate pages)
 
-### PKCE (Proof Key for Code Exchange) Requirements
-For public Cognito app clients (no client secret), PKCE is required:
-```typescript
-{
-  loadUserInfo: false,
-  automaticSilentRenew: true,
-  silent_redirect_uri: "http://localhost:5173/silent-renew.html"
-}
-```
-
-### Custom Domain OIDC Configuration
-When using custom Cognito domains, explicit metadata configuration is required:
-```typescript
-metadata: {
-  authorization_endpoint: `${domain}/oauth2/authorize`,
-  token_endpoint: `${authority}/oauth2/token`,
-  end_session_endpoint: `${domain}/logout`,
-  jwks_uri: `${authority}/oauth2/v1/keys`,
-  issuer: authority,
-}
-```
-
 ### Cognito App Client Configuration Requirements
 - **Client Type**: Public (no client secret)
 - **OAuth Flows**: Authorization code grant
 - **Callback URLs**: Must include exact development and production URLs
-- **Allowed OAuth Scopes**: openid, email, phone
-- **PKCE**: Required for public clients
+- **Allowed OAuth Scopes**: openid, email
+- **PKCE**: Required for public clients (handled automatically by oidc-client-ts)
 
 ### IAM Permissions Required
 ```json
@@ -347,96 +326,19 @@ metadata: {
 
 ### Production Environment Variables (AWS Parameter Store)
 ```bash
-# Parameters already configured in AWS Systems Manager Parameter Store:
-# /normalscience/cognito/authority = https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g
-# /normalscience/cognito/client-id = 2cdco3vv7ka931ltfl9lsm4jr
-# /normalscience/cognito/domain = https://auth.normalscience.com
+# Store these parameters in AWS Systems Manager Parameter Store
+# Replace placeholder values with your actual Cognito credentials
+
+aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID" --type "SecureString"
+aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "YOUR_CLIENT_ID" --type "SecureString"
+aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString"
 
 # To verify parameters:
 aws ssm describe-parameters --parameter-filters "Key=Name,Option=BeginsWith,Values=/normalscience" --region us-east-1
 
 # To retrieve a parameter:
 aws ssm get-parameter --name "/normalscience/cognito/authority" --with-decryption --region us-east-1
-
-# To store parameters (if needed):
-aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g" --type "SecureString" --region us-east-1
-aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "2cdco3vv7ka931ltfl9lsm4jr" --type "SecureString" --region us-east-1
-aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString" --region us-east-1
 ```
-
-### Production Auth Configuration
-```typescript
-// src/config/auth.ts
-import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
-
-const ssmClient = new SSMClient({ region: "us-east-1" });
-
-const getParameter = async (parameterName: string): Promise<string> => {
-  try {
-    const command = new GetParameterCommand({
-      Name: parameterName,
-      WithDecryption: true,
-    });
-    const response = await ssmClient.send(command);
-    return response.Parameter?.Value || "";
-  } catch (error) {
-    console.error(`Error fetching parameter ${parameterName}:`, error);
-    return "";
-  }
-};
-
-const getAuthConfig = async () => {
-  const isDev = import.meta.env.DEV;
-  
-  if (isDev) {
-    // Use local environment variables for development
-    return {
-      authority: import.meta.env.VITE_COGNITO_AUTHORITY,
-      client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
-      redirect_uri: "http://localhost:5173/auth/callback",
-      response_type: "code",
-      scope: "phone openid email",
-      post_logout_redirect_uri: "http://localhost:5173/",
-      loadUserInfo: false,
-      automaticSilentRenew: true,
-      silent_redirect_uri: "http://localhost:5173/silent-renew.html",
-      metadata: {
-        authorization_endpoint: `${import.meta.env.VITE_COGNITO_DOMAIN}/oauth2/authorize`,
-        token_endpoint: `${import.meta.env.VITE_COGNITO_AUTHORITY}/oauth2/token`,
-        end_session_endpoint: `${import.meta.env.VITE_COGNITO_DOMAIN}/logout`,
-        jwks_uri: `${import.meta.env.VITE_COGNITO_AUTHORITY}/oauth2/v1/keys`,
-        issuer: import.meta.env.VITE_COGNITO_AUTHORITY,
-      },
-    };
-  } else {
-    // Use Parameter Store for production
-    const authority = await getParameter("/normalscience/cognito/authority");
-    const clientId = await getParameter("/normalscience/cognito/client-id");
-    const domain = await getParameter("/normalscience/cognito/domain");
-    
-    return {
-      authority,
-      client_id: clientId,
-      redirect_uri: "https://normalscience.com/auth/callback",
-      response_type: "code",
-      scope: "phone openid email",
-      post_logout_redirect_uri: "https://normalscience.com/",
-      loadUserInfo: false,
-      automaticSilentRenew: true,
-      silent_redirect_uri: "https://normalscience.com/silent-renew.html",
-      metadata: {
-        authorization_endpoint: `${domain}/oauth2/authorize`,
-        token_endpoint: `${authority}/oauth2/token`,
-        end_session_endpoint: `${domain}/logout`,
-        jwks_uri: `${authority}/oauth2/v1/keys`,
-        issuer: authority,
-      },
-    };
-  }
-};
-```
-
-
 
 ## Dependencies
 
@@ -611,10 +513,10 @@ The application must include scripts that handle server management:
 - Responsive design works across breakpoints
 - Accessibility requirements met
 - **Design matches normalscience.com's visual language**
-- **Background texture is clearly visible and matches reference site**
+- **Background texture represents double-slit experiment photon detection pattern**
 - **Background Texture**: Must be clearly visible on first page load
-- **Texture Density**: Minimum 8 gradient layers with opacity 0.04-0.12
-- **Cross-hatch Overlay**: Diagonal line texture must be present
+- **Texture Density**: 6 gradient layers with opacity 0.03-0.08 for subtle quantum pattern
+- **Interference Pattern**: Diagonal line overlay represents wave interference
 - **No SVG Dependencies**: Background must not rely on SVG data URLs
 - **Immediate Visibility**: Texture visible without cache clearing or hard refresh
 - **No taglines or descriptive text under company heading**
@@ -721,29 +623,4 @@ try {
 
 ---
 
-**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality. The company heading must appear on one line with no taglines or descriptive text underneath.
-
-### Environment Variables Setup
-
-#### Global Environment (Add to ~/.zshrc)
-```bash
-# Normal Science App Cognito Configuration
-export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g"
-export NORMAL_SCIENCE_COGNITO_CLIENT_ID="2cdco3vv7ka931ltfl9lsm4jr"
-export NORMAL_SCIENCE_COGNITO_DOMAIN="https://auth.normalscience.com"
-```
-
-#### Local Environment (.env.local)
-```bash
-VITE_COGNITO_AUTHORITY=$NORMAL_SCIENCE_COGNITO_AUTHORITY
-VITE_COGNITO_CLIENT_ID=$NORMAL_SCIENCE_COGNITO_CLIENT_ID
-VITE_COGNITO_DOMAIN=$NORMAL_SCIENCE_COGNITO_DOMAIN
-```
-
-### Production Environment Variables (AWS Parameter Store)
-```bash
-# Store in AWS Systems Manager Parameter Store
-aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g" --type "SecureString"
-aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "2cdco3vv7ka931ltfl9lsm4jr" --type "SecureString"
-aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString"
-```
+**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality. The company heading must appear on one line with no taglines or descriptive text underneath. The background texture represents the photon detection pattern from the double-slit experiment, creating a subtle artistic representation of quantum mechanics.
