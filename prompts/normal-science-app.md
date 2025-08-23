@@ -8,7 +8,7 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 
 - Two directories: `/web` and `/api`
 - Production deployment to `normalscience.com` domain
-- Mock AWS Cognito authentication (ready for real Cognito integration)
+- AWS Cognito authentication with custom domain (auth.normalscience.com)
 - **Design Language**: Must match normalscience.com's current design system
 
 ## Design System
@@ -59,7 +59,7 @@ module.exports = {
 ## Frontend (/web) - React + Vite + TypeScript + Tailwind
 
 ### Pages & Features
-- **Landing page**: Login button (simulates AWS Cognito authentication)
+- **Landing page**: Login button (AWS Cognito authentication)
 - **Chat page**: Textbox, Send button, transcript area (protected content)
   - Messages are ephemeral (not persisted)
   - Calls POST /api/chat and displays response
@@ -81,26 +81,57 @@ module.exports = {
 - **Color Scheme**: Must match normalscience.com's current design language
 - **Typography**: Consistent with normalscience.com's font choices
 - **Layout**: Maintain visual consistency with existing site design
-- **Background**: Subtle texture overlay that matches normalscience.com's background treatment
+- **Background**: Visible texture overlay that matches normalscience.com's background treatment
 
-### Background Design
-Use provided SVG noise pattern as background across all pages:
-```svg
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
-  <filter id="noise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-    <feColorMatrix type="saturate" values="0" />
-    <feComponentTransfer>
-      <feFuncA type="linear" slope="0.4" />
-    </feComponentTransfer>
-  </filter>
-  <rect width="100%" height="100%" filter="url(#noise)" fill="#f5f1e8" />
-</svg>
+### Background Texture Implementation
+- **Texture Type**: Must use CSS-based noise texture, NOT SVG data URLs
+- **Visibility**: Texture must be clearly visible and not subtle - use opacity values between 0.04-0.12
+- **Technique**: Use multiple radial gradients with varied opacities and positions
+- **Layers**: Minimum 6-8 gradient layers for density
+- **Cross-hatch**: Include diagonal line overlays for additional texture
+- **Testing**: Texture must be visible on first load without browser cache clearing
+- **Fallback**: If CSS gradients fail, implement as base64 encoded PNG noise pattern
+- **Browser Compatibility**: Must work in Chrome, Firefox, Safari without special handling
+
+### Background CSS Implementation
+```css
+body {
+  background-color: #f5f1e8;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(45, 45, 45, 0.12) 1px, transparent 1px),
+    radial-gradient(circle at 85% 85%, rgba(45, 45, 45, 0.10) 1px, transparent 1px),
+    radial-gradient(circle at 35% 65%, rgba(45, 45, 45, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 65% 35%, rgba(45, 45, 45, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 5% 45%, rgba(45, 45, 45, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 95% 55%, rgba(45, 45, 45, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 25% 75%, rgba(45, 45, 45, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 75% 25%, rgba(45, 45, 45, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px, 45px 45px, 60px 60px, 75px 75px, 90px 90px, 105px 105px, 120px 120px, 135px 135px;
+  background-position: 0 0, 15px 15px, 30px 30px, 45px 45px, 60px 60px, 75px 75px, 90px 90px, 105px 105px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(45, 45, 45, 0.02) 3px, rgba(45, 45, 45, 0.02) 6px),
+    repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(45, 45, 45, 0.015) 3px, rgba(45, 45, 45, 0.015) 6px);
+  pointer-events: none;
+  z-index: -1;
+}
 ```
-- Apply as CSS background pattern with higher visibility (0.4 slope)
-- Ensure proper contrast with text content
-- Optimize for performance (consider base64 encoding)
-- **Must match normalscience.com's background treatment**
+
+### Background Texture Testing
+- Test on multiple browsers (Chrome, Firefox, Safari)
+- Verify texture is visible on first page load
+- Test with different screen resolutions
+- Ensure texture doesn't interfere with text readability
+- Verify texture matches normalscience.com's paper-like appearance
+- **CRITICAL**: Texture must be immediately visible without cache clearing or hard refresh
 
 ## Backend (/api) - Node 20 + Express + TypeScript
 
@@ -130,17 +161,177 @@ Use provided SVG noise pattern as background across all pages:
   }
   ```
 - **Rate Limiting**: Implement rate limiting on chat endpoint
-- **Authentication**: Secure mock authentication implementation
+- **Authentication**: Secure AWS Cognito authentication implementation
 
-## Authentication (Mock Cognito)
+## Authentication (AWS Cognito)
 
-- **Mock SDK**: Simulate AWS Cognito authentication flow with signIn, signOut, getCurrentUser
-- **Session Management**: React Context for in-memory session storage, expires on page refresh
-- **Token Expiration**: Mock tokens expire after 1 hour, redirect to login and clear session when expired
+### Environment Variables Setup
+
+#### Global Environment (Add to ~/.zshrc)
+```bash
+# Normal Science App Cognito Configuration
+export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g"
+export NORMAL_SCIENCE_COGNITO_CLIENT_ID="2cdco3vv7ka931ltfl9lsm4jr"
+export NORMAL_SCIENCE_COGNITO_DOMAIN="https://auth.normalscience.com"
+```
+
+#### Local Environment (.env.local)
+```bash
+VITE_COGNITO_AUTHORITY=$NORMAL_SCIENCE_COGNITO_AUTHORITY
+VITE_COGNITO_CLIENT_ID=$NORMAL_SCIENCE_COGNITO_CLIENT_ID
+VITE_COGNITO_DOMAIN=$NORMAL_SCIENCE_COGNITO_DOMAIN
+```
+
+#### Environment Variable Validation
+The application should validate that all required environment variables are present:
+```typescript
+// Add to auth configuration
+if (!import.meta.env.VITE_COGNITO_AUTHORITY) {
+  throw new Error('Missing VITE_COGNITO_AUTHORITY environment variable');
+}
+if (!import.meta.env.VITE_COGNITO_CLIENT_ID) {
+  throw new Error('Missing VITE_COGNITO_CLIENT_ID environment variable');
+}
+if (!import.meta.env.VITE_COGNITO_DOMAIN) {
+  throw new Error('Missing VITE_COGNITO_DOMAIN environment variable');
+}
+```
+
+### Cognito Configuration
+```typescript
+import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+
+const ssmClient = new SSMClient({ region: "us-east-1" });
+
+const getParameter = async (parameterName: string): Promise<string> => {
+  try {
+    const command = new GetParameterCommand({
+      Name: parameterName,
+      WithDecryption: true,
+    });
+    const response = await ssmClient.send(command);
+    return response.Parameter?.Value || "";
+  } catch (error) {
+    console.error(`Error fetching parameter ${parameterName}:`, error);
+    return "";
+  }
+};
+
+const getAuthConfig = async () => {
+  const isDev = import.meta.env.DEV;
+  
+  if (isDev) {
+    // Use local environment variables for development
+    return {
+      authority: import.meta.env.VITE_COGNITO_AUTHORITY,
+      client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
+      redirect_uri: "http://localhost:5173/auth/callback",
+      response_type: "code",
+      scope: "phone openid email",
+      post_logout_redirect_uri: "http://localhost:5173/",
+    };
+  } else {
+    // Use Parameter Store for production
+    const authority = await getParameter("/normalscience/cognito/authority");
+    const clientId = await getParameter("/normalscience/cognito/client-id");
+    
+    return {
+      authority,
+      client_id: clientId,
+      redirect_uri: "https://normalscience.com/auth/callback",
+      response_type: "code",
+      scope: "phone openid email",
+      post_logout_redirect_uri: "https://normalscience.com/",
+    };
+  }
+};
+```
+
+### Cognito Domain
+- **Custom Domain**: `https://auth.normalscience.com`
+- **CNAME Record**: `auth.normalscience.com` → Cognito alias target
+
+### Allowed URLs (Cognito App Client Configuration)
+- **Callback URLs**:
+  - `http://localhost:5173/auth/callback` (development)
+  - `https://normalscience.com/auth/callback` (production)
+  - `https://app.normalscience.com/auth/callback`
+  - `https://www.normalscience.com/auth/callback`
+- **Sign-out URLs**:
+  - `http://localhost:5173/` (development)
+  - `https://normalscience.com/` (production)
+  - `https://app.normalscience.com/`
+  - `https://www.normalscience.com/`
+
+### Dependencies Required
+```json
+{
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.0.0",
+    "oidc-client-ts": "^2.4.1",
+    "react-oidc-context": "^2.4.0"
+  },
+  "devDependencies": {
+    "react-router-dom": "^6.0.0"
+  }
+}
+```
+
+### Implementation Requirements
+- **Auth Provider**: Wrap App with AuthProvider from react-oidc-context
+- **Session Management**: Use Cognito tokens with automatic refresh
 - **Loading States**: Handle async authentication with loading states
-- **Error Handling**: Auth failures (invalid credentials, network errors)
+- **Error Handling**: Auth failures (network errors, token expiration)
 - **TypeScript**: Interfaces matching Cognito user structure
 - **Direct Redirect**: After login, redirect directly to protected chat content (no intermediate pages)
+
+### PKCE (Proof Key for Code Exchange) Requirements
+For public Cognito app clients (no client secret), PKCE is required:
+```typescript
+{
+  loadUserInfo: false,
+  automaticSilentRenew: true,
+  silent_redirect_uri: "http://localhost:5173/silent-renew.html"
+}
+```
+
+### Custom Domain OIDC Configuration
+When using custom Cognito domains, explicit metadata configuration is required:
+```typescript
+metadata: {
+  authorization_endpoint: `${domain}/oauth2/authorize`,
+  token_endpoint: `${authority}/oauth2/token`,
+  end_session_endpoint: `${domain}/logout`,
+  jwks_uri: `${authority}/oauth2/v1/keys`,
+  issuer: authority,
+}
+```
+
+### Cognito App Client Configuration Requirements
+- **Client Type**: Public (no client secret)
+- **OAuth Flows**: Authorization code grant
+- **Callback URLs**: Must include exact development and production URLs
+- **Allowed OAuth Scopes**: openid, email, phone
+- **PKCE**: Required for public clients
+
+### IAM Permissions Required
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+            ],
+            "Resource": [
+                "arn:aws:ssm:us-east-1:*:parameter/normalscience/cognito/*"
+            ]
+        }
+    ]
+}
+```
 
 ## Environment & Configuration
 
@@ -154,10 +345,115 @@ Use provided SVG noise pattern as background across all pages:
 - **Environment Detection**: Use NODE_ENV for environment-specific configurations
 - **No Proxy**: Same-domain deployment
 
+### Production Environment Variables (AWS Parameter Store)
+```bash
+# Parameters already configured in AWS Systems Manager Parameter Store:
+# /normalscience/cognito/authority = https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g
+# /normalscience/cognito/client-id = 2cdco3vv7ka931ltfl9lsm4jr
+# /normalscience/cognito/domain = https://auth.normalscience.com
+
+# To verify parameters:
+aws ssm describe-parameters --parameter-filters "Key=Name,Option=BeginsWith,Values=/normalscience" --region us-east-1
+
+# To retrieve a parameter:
+aws ssm get-parameter --name "/normalscience/cognito/authority" --with-decryption --region us-east-1
+
+# To store parameters (if needed):
+aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g" --type "SecureString" --region us-east-1
+aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "2cdco3vv7ka931ltfl9lsm4jr" --type "SecureString" --region us-east-1
+aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString" --region us-east-1
+```
+
+### Production Auth Configuration
+```typescript
+// src/config/auth.ts
+import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+
+const ssmClient = new SSMClient({ region: "us-east-1" });
+
+const getParameter = async (parameterName: string): Promise<string> => {
+  try {
+    const command = new GetParameterCommand({
+      Name: parameterName,
+      WithDecryption: true,
+    });
+    const response = await ssmClient.send(command);
+    return response.Parameter?.Value || "";
+  } catch (error) {
+    console.error(`Error fetching parameter ${parameterName}:`, error);
+    return "";
+  }
+};
+
+const getAuthConfig = async () => {
+  const isDev = import.meta.env.DEV;
+  
+  if (isDev) {
+    // Use local environment variables for development
+    return {
+      authority: import.meta.env.VITE_COGNITO_AUTHORITY,
+      client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
+      redirect_uri: "http://localhost:5173/auth/callback",
+      response_type: "code",
+      scope: "phone openid email",
+      post_logout_redirect_uri: "http://localhost:5173/",
+      loadUserInfo: false,
+      automaticSilentRenew: true,
+      silent_redirect_uri: "http://localhost:5173/silent-renew.html",
+      metadata: {
+        authorization_endpoint: `${import.meta.env.VITE_COGNITO_DOMAIN}/oauth2/authorize`,
+        token_endpoint: `${import.meta.env.VITE_COGNITO_AUTHORITY}/oauth2/token`,
+        end_session_endpoint: `${import.meta.env.VITE_COGNITO_DOMAIN}/logout`,
+        jwks_uri: `${import.meta.env.VITE_COGNITO_AUTHORITY}/oauth2/v1/keys`,
+        issuer: import.meta.env.VITE_COGNITO_AUTHORITY,
+      },
+    };
+  } else {
+    // Use Parameter Store for production
+    const authority = await getParameter("/normalscience/cognito/authority");
+    const clientId = await getParameter("/normalscience/cognito/client-id");
+    const domain = await getParameter("/normalscience/cognito/domain");
+    
+    return {
+      authority,
+      client_id: clientId,
+      redirect_uri: "https://normalscience.com/auth/callback",
+      response_type: "code",
+      scope: "phone openid email",
+      post_logout_redirect_uri: "https://normalscience.com/",
+      loadUserInfo: false,
+      automaticSilentRenew: true,
+      silent_redirect_uri: "https://normalscience.com/silent-renew.html",
+      metadata: {
+        authorization_endpoint: `${domain}/oauth2/authorize`,
+        token_endpoint: `${authority}/oauth2/token`,
+        end_session_endpoint: `${domain}/logout`,
+        jwks_uri: `${authority}/oauth2/v1/keys`,
+        issuer: authority,
+      },
+    };
+  }
+};
+```
+
+
+
 ## Dependencies
+
+### Root Dependencies (for enhanced scripts)
+```json
+{
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "wait-on": "^7.0.0"
+  }
+}
+```
 
 ### /web Dependencies
 - **Core**: react, react-dom, vite, typescript, @vitejs/plugin-react, tailwindcss, postcss, autoprefixer
+- **Auth**: oidc-client-ts@^2.4.1, react-oidc-context@^2.4.0, @aws-sdk/client-ssm
+- **Routing**: react-router-dom (optional, for callback routes)
 - **Dev**: @types/react, @types/react-dom
 - **Testing**: playwright, @playwright/test
 
@@ -195,6 +491,56 @@ Use provided SVG noise pattern as background across all pages:
 - `"build": "tsc"`
 - `"start": "node dist/index.js"`
 
+## Development Server Management
+
+### Background Process Requirements
+- All development servers must be started in background using `&` operator
+- Implement proper health checks before proceeding with tests
+- Use process management for cleanup after testing
+- Never wait for dev servers to "finish" as they are long-running processes
+
+### Required Scripts
+The application must include scripts that handle server management:
+- `npm run dev:all` - Start both servers in background
+- `npm run test:e2e` - Start servers, run tests, cleanup
+- `npm run test:cleanup` - Stop all dev servers
+
+### Enhanced Development Scripts Implementation
+
+#### Root Package.json
+```json
+{
+  "scripts": {
+    "dev:all": "concurrently --kill-others --prefix \"[{name}]\" --names \"API,WEB\" \"cd api && npm run dev\" \"cd web && npm run dev\"",
+    "test:e2e": "npm run dev:all && wait-on -t 30000 http://localhost:4000/healthz http://localhost:5173/index.html && playwright test && npm run test:cleanup",
+    "test:cleanup": "pkill -f 'npm run dev' || pkill -f 'vite' || pkill -f 'nodemon' || true",
+    "install:all": "cd api && npm install && cd ../web && npm install"
+  }
+}
+```
+
+#### Dependencies Required
+```json
+{
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "wait-on": "^7.0.0"
+  }
+}
+```
+
+#### Script Functionality
+- **`dev:all`**: Uses `concurrently` to run both servers simultaneously with clear logging
+- **`test:e2e`**: Starts servers, waits for health endpoints, runs tests, cleans up
+- **`test:cleanup`**: Kills all development processes with fallback options
+- **`install:all`**: Installs dependencies for both API and web projects
+
+### Testing Workflow
+1. Start servers in background with health verification
+2. Run tests or manual verification
+3. Clean up processes when complete
+4. Document any manual steps required for testing
+
 ## Testing
 
 ### E2E Testing (Playwright)
@@ -219,14 +565,19 @@ Use provided SVG noise pattern as background across all pages:
 │   ├── tailwind.config.js
 │   ├── postcss.config.js
 │   ├── index.html
+│   ├── .env.local
+│   ├── public/
+│   │   ├── vite.svg
+│   │   └── silent-renew.html
 │   └── src/
 │       ├── main.tsx
 │       ├── App.tsx
-│       ├── pages/
-│       │   ├── Landing.tsx
-│       │   └── Chat.tsx
-│       └── lib/
-│           └── auth.ts
+│       ├── config/
+│       │   └── auth.ts
+│       └── pages/
+│           ├── Landing.tsx
+│           ├── Chat.tsx
+│           └── AuthCallback.tsx
 ├── api/
 │   ├── package.json
 │   ├── tsconfig.json
@@ -243,6 +594,12 @@ Use provided SVG noise pattern as background across all pages:
 - All source files with proper imports and paths
 - README.md with local development instructions
 
+### Required Files for Authentication
+- `web/public/silent-renew.html` - Required for token refresh
+- `web/src/pages/AuthCallback.tsx` - Optional callback handler
+- `web/.env.local` - Development environment variables
+- `web/public/vite.svg` - Custom favicon
+
 ## Quality Gates
 
 - All file imports and paths correct
@@ -255,16 +612,32 @@ Use provided SVG noise pattern as background across all pages:
 - Accessibility requirements met
 - **Design matches normalscience.com's visual language**
 - **Background texture is clearly visible and matches reference site**
+- **Background Texture**: Must be clearly visible on first page load
+- **Texture Density**: Minimum 8 gradient layers with opacity 0.04-0.12
+- **Cross-hatch Overlay**: Diagonal line texture must be present
+- **No SVG Dependencies**: Background must not rely on SVG data URLs
+- **Immediate Visibility**: Texture visible without cache clearing or hard refresh
 - **No taglines or descriptive text under company heading**
 
 ## Local Development Instructions
 
-1. `cd api && npm install && npm run dev` (runs on http://localhost:4000)
-2. `cd web && npm install && npm run dev` (runs on http://localhost:5173)
+### Option 1: Manual Server Management
+1. `cd api && npm install && npm run dev &` (background, runs on http://localhost:4000)
+2. `cd web && npm install && npm run dev &` (background, runs on http://localhost:5173)
+3. Wait 3-5 seconds for servers to initialize
+4. Verify servers: `curl http://localhost:4000/healthz` and `curl http://localhost:5173/`
+5. Open browser to http://localhost:5173
+6. Click Login → Chat (direct access to protected content)
+7. Send a message and confirm response
+8. Run `npm run test:e2e` to verify functionality
+9. Cleanup: `pkill -f "npm run dev"`
+
+### Option 2: Using Enhanced Scripts
+1. `npm run dev:all` (starts both servers in background)
+2. Wait for health checks to pass
 3. Open browser to http://localhost:5173
-4. Click Login → Chat (direct access to protected content)
-5. Send a message and confirm response
-6. Run `npm run test:e2e` to verify functionality
+4. Test functionality manually or run `npm run test:e2e`
+5. `npm run test:cleanup` (stops all servers)
 
 ## Design Integration Requirements
 
@@ -290,17 +663,87 @@ Use provided SVG noise pattern as background across all pages:
 - **Hover States**: Match existing hover interactions
 - **Focus States**: Ensure accessibility while maintaining design consistency
 
+## Authentication Troubleshooting
+
+### Common Issues
+1. **400 Bad Request on Token Exchange**: Usually indicates PKCE mismatch or incorrect redirect URI
+2. **CORS Errors**: Check that callback URLs are exactly configured in Cognito
+3. **Silent Renew Failures**: Ensure silent-renew.html exists and is accessible
+4. **Environment Variable Errors**: Missing or incorrect environment variables cause silent failures
+5. **Custom Domain Issues**: Custom domains require explicit metadata configuration
+
+### Debugging Steps
+1. Check browser Network tab for failed requests
+2. Verify environment variables are loaded correctly
+3. Test with standard Cognito hosted UI first
+4. Check Cognito app client configuration
+5. Verify custom domain DNS settings
+6. Check browser console for detailed error messages
+7. Verify redirect URIs match exactly (including trailing slashes)
+
+### Development vs Production Auth Strategy
+- **Development**: Use standard Cognito hosted UI for simplicity and easier debugging
+- **Production**: Use custom domain with explicit metadata configuration for branding
+
+### Error Handling for Token Exchange Failures
+```typescript
+try {
+  await auth.signinCallback();
+} catch (error) {
+  console.error('Token exchange failed:', error);
+  // Handle 400 Bad Request errors specifically
+  if (error.message?.includes('400')) {
+    // Log detailed error information
+    console.error('Token exchange 400 error details:', error);
+  }
+}
+```
+
+### Browser Network Debugging Instructions
+```markdown
+## Debugging Authentication Issues
+- Check browser Network tab for token exchange requests
+- Look for 400 Bad Request errors in token endpoint
+- Verify redirect URIs match exactly (including trailing slashes)
+- Check CORS headers in preflight requests
+- Look for PKCE code_verifier mismatches
+```
+
 ## Future Enhancements
 
-- Real AWS Cognito integration
 - CloudWatch logging implementation
 - Production environment configurations
 - Advanced error handling and retry logic
 - Performance monitoring and optimization
 - CI/CD pipeline setup
-- **LLM Integration**: Replace mock chat with real AI-powered responses
+- **LLM Integration**: Replace placeholder chat with real AI-powered responses
 - **Design System**: Create comprehensive design tokens matching normalscience.com
 
 ---
 
 **Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality. The company heading must appear on one line with no taglines or descriptive text underneath.
+
+### Environment Variables Setup
+
+#### Global Environment (Add to ~/.zshrc)
+```bash
+# Normal Science App Cognito Configuration
+export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g"
+export NORMAL_SCIENCE_COGNITO_CLIENT_ID="2cdco3vv7ka931ltfl9lsm4jr"
+export NORMAL_SCIENCE_COGNITO_DOMAIN="https://auth.normalscience.com"
+```
+
+#### Local Environment (.env.local)
+```bash
+VITE_COGNITO_AUTHORITY=$NORMAL_SCIENCE_COGNITO_AUTHORITY
+VITE_COGNITO_CLIENT_ID=$NORMAL_SCIENCE_COGNITO_CLIENT_ID
+VITE_COGNITO_DOMAIN=$NORMAL_SCIENCE_COGNITO_DOMAIN
+```
+
+### Production Environment Variables (AWS Parameter Store)
+```bash
+# Store in AWS Systems Manager Parameter Store
+aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_rPudVCi6g" --type "SecureString"
+aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "2cdco3vv7ka931ltfl9lsm4jr" --type "SecureString"
+aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString"
+```
