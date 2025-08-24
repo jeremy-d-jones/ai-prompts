@@ -1,3 +1,15 @@
+---
+description: 'Frontend design and user experience prompts for modern web applications'
+mode: 'instruction'
+tags: ['frontend', 'design', 'ux', 'ui', 'web-development', 'responsive', 'modern', 'user-experience']
+difficulty: 'intermediate'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['HTML/CSS', 'JavaScript', 'Design principles']
+estimatedTime: '15-30 minutes'
+useCase: 'Frontend web design and user experience optimization'
+---
 Prompt for Front-End Web Designer: Website Placeholder
 You are a skilled front-end web designer. I need you to build a placeholder website to serve as a temporary and polished representation of my brand. My company is named The Normal Science Company.
 Overview

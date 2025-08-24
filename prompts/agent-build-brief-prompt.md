@@ -1,3 +1,15 @@
+---
+description: 'AI agent development briefs and specifications for building intelligent systems'
+mode: 'prompt'
+tags: ['ai', 'agent', 'development', 'specification', 'brief', 'intelligent-systems', 'automation', 'cursor']
+difficulty: 'advanced'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['AI concepts', 'System design', 'Programming fundamentals', 'Cursor IDE']
+estimatedTime: '20-40 minutes'
+useCase: 'Creating specifications for AI agent development projects'
+---
 Cursor Agent Brief — Non-Interactive Build (Stop After First PR)
 Repo & Branch Scope
 	•	Repository: jeremy-d-jones/ohh-thats-fresh

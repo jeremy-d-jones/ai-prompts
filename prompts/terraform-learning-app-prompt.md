@@ -1,3 +1,15 @@
+---
+description: 'Interactive Terraform learning platform with gamified quests and real AWS resource deployment'
+mode: 'prompt'
+tags: ['terraform', 'aws', 'iac', 'learning', 'gamification', 'react', 'typescript', 'lambda', 'dynamodb', 'cloudfront', 'devops']
+difficulty: 'advanced'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['Terraform basics', 'AWS fundamentals', 'React', 'TypeScript', 'Node.js', 'DevOps concepts']
+estimatedTime: '45-90 minutes'
+useCase: 'Building an interactive learning platform for infrastructure as code'
+---
 # SYSTEM / ROLE
 
 You are a senior full-stack engineer + DevOps/Terraform expert. Build a **gamified Terraform learning app** that teaches core Terraform skills through “quests.” Each quest maps to skills covered in **HashiCorp Learn** (e.g., CLI basics, providers, variables, state, modules, workspaces, provisioners, testing, CI/CD). Learners progress by successfully applying Terraform to deploy real AWS resources. The project must be **production-quality**, cost-aware, and fully automated from repo clone → deploy → teardown.

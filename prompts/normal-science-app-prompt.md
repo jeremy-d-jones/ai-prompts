@@ -1,8 +1,44 @@
-# Normal Science App - Full Stack Development Specification
-
-You are an expert full-stack engineer. Build a minimal app that runs locally on my laptop with production-ready architecture for AWS deployment.
+---
+description: 'Full-stack chat application with quantum mechanics theming and AWS Cognito authentication'
+mode: 'prompt'
+tags: ['react', 'typescript', 'nodejs', 'express', 'aws', 'cognito', 'fullstack', 'chat', 'authentication', 'tailwind', 'vite']
+difficulty: 'intermediate'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['React', 'TypeScript', 'Node.js', 'AWS basics', 'Tailwind CSS', 'Vite']
+estimatedTime: '20-40 minutes'
+useCase: 'Building a production-ready chat application with authentication'
+---
+You are an expert full-stack engineer. Build a minimal app that runs locally on your laptop with production-ready architecture for AWS deployment.
 
 **IMPORTANT**: When you create any code or files, save this exact prompt as `original-prompt-$(git rev-parse --short HEAD).md` in the root directory of the project to preserve the original instructions with version tracking.
+
+## Prerequisites
+
+### Required AWS Resources (Must be created first)
+- AWS Cognito User Pool with custom domain (auth.normalscience.com)
+- Cognito App Client configured with OAuth flows
+- AWS Systems Manager Parameter Store parameters
+- IAM permissions for Parameter Store access
+
+### Pre-Development Setup
+1. Create Cognito User Pool and App Client
+2. Store credentials in Parameter Store:
+   ```bash
+   aws ssm put-parameter --name "/normalscience/cognito/authority" --value "..." --type "SecureString"
+   aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "..." --type "SecureString"
+   ```
+3. Verify credentials are accessible before starting development:
+   ```bash
+   aws ssm get-parameter --name "/normalscience/cognito/authority" --with-decryption --region us-east-1
+   ```
+
+### Local Environment Requirements
+- Node.js 20+ installed
+- Git configured
+- AWS CLI configured with appropriate permissions
+- Bash/zsh terminal (PowerShell may have issues with some commands)
 
 ## Architecture Overview
 
@@ -10,6 +46,16 @@ You are an expert full-stack engineer. Build a minimal app that runs locally on 
 - Production deployment to `normalscience.com` domain
 - AWS Cognito authentication with custom domain (auth.normalscience.com)
 - **Design Language**: Must match normalscience.com's current design system
+
+## Implementation Order
+
+1. **Basic Setup**: Project structure, dependencies, configuration
+2. **API Development**: Health endpoint, chat endpoint, validation
+3. **Web Foundation**: Routing, basic pages, design system
+4. **Authentication**: Cognito integration, callback handling
+5. **Integration**: Connect frontend to backend
+6. **Testing**: E2E tests, error handling
+7. **Polish**: Performance, accessibility, design consistency
 
 ## Design System
 
@@ -67,12 +113,16 @@ module.exports = {
   - Disables Send button during API calls
   - **Direct access after login** (no intermediate welcome page)
 
-### Technical Requirements
+### Technical Requirements (Prioritized)
+
+#### Must Have (MVP)
 - **State Management**: React Context for global state (authentication, user session), local state for component-specific data
 - **Error Handling**: Wrap main App component in React error boundary with fallback UI and reload option
 - **Loading States**: Show loading indicators during async operations (login, API calls), disable buttons during operations
 - **Accessibility**: Semantic HTML elements, alt text for images, keyboard navigation, basic ARIA labels, color contrast ratios
 - **Responsive Design**: Mobile-first approach using Tailwind responsive utilities across mobile, tablet, and desktop breakpoints
+
+#### Should Have (Enhanced)
 - **Performance**: Optimize bundle size, lazy load components if needed, basic image optimization
 
 ### Design System Requirements
@@ -137,10 +187,15 @@ body::before {
   }
   ```
 
-### Technical Requirements
+### Technical Requirements (Prioritized)
+
+#### Must Have (MVP)
 - **Validation**: Basic input validation for chat messages (length, content type)
 - **Error Handling**: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
 - **Logging**: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
+
+#### Should Have (Enhanced)
+- **Rate Limiting**: Basic rate limiting on chat endpoint (100 requests per minute per IP)
 
 ### Security Requirements
 - **Input Validation**: Basic validation for chat messages
@@ -158,7 +213,6 @@ body::before {
     }
   }
   ```
-- **Rate Limiting**: Basic rate limiting on chat endpoint (100 requests per minute per IP)
 - **Authentication**: Secure AWS Cognito authentication implementation
 
 ## Authentication (AWS Cognito)
@@ -443,7 +497,21 @@ The application must include scripts that handle server management:
 3. Clean up processes when complete
 4. Document any manual steps required for testing
 
-## Testing
+## Testing Strategy
+
+### Phase 1: Basic Functionality (No Auth)
+- Test API endpoints directly
+- Test web app loading and routing
+- Verify design system implementation
+
+### Phase 2: Authentication Integration
+- Test login flow with real credentials
+- Test protected routes
+- Test error handling
+
+### Phase 3: Full E2E Testing
+- Complete user journey testing
+- Performance and accessibility testing
 
 ### E2E Testing (Playwright)
 - Test navigation: Landing → Chat (direct after login)
@@ -502,6 +570,35 @@ The application must include scripts that handle server management:
 - `web/.env.local` - Development environment variables
 - `web/public/vite.svg` - Custom favicon
 
+## Validation Checklist
+
+### Before Starting Development
+- [ ] AWS Cognito resources created
+- [ ] Parameter Store variables set
+- [ ] IAM permissions configured
+- [ ] Local development environment ready
+
+### After Each Phase
+- [ ] Basic functionality works
+- [ ] No TypeScript errors
+- [ ] Design system implemented
+- [ ] Error handling in place
+
+## Success Criteria
+
+### Functional Requirements
+- [ ] User can log in via Cognito
+- [ ] User can access protected chat page
+- [ ] User can send messages and receive responses
+- [ ] User can log out and return to landing page
+
+### Technical Requirements
+- [ ] No console errors in browser
+- [ ] All E2E tests pass
+- [ ] Design matches normalscience.com
+- [ ] Background texture visible
+- [ ] Responsive design works
+
 ## Quality Gates
 
 - All file imports and paths correct
@@ -541,29 +638,33 @@ The application must include scripts that handle server management:
 4. Test functionality manually or run `npm run test:e2e`
 5. `npm run test:cleanup` (stops all servers)
 
-## Design Integration Requirements
+## Development Server Troubleshooting
 
-### Color Scheme
-- **Primary Colors**: Must match normalscience.com's primary color palette
-- **Background Colors**: Match the existing site's background treatment
-- **Text Colors**: Ensure proper contrast ratios with normalscience.com's color scheme
-- **Accent Colors**: Use normalscience.com's accent colors for interactive elements
+### Common Issues
+1. **PowerShell Environment**: Some commands may fail in PowerShell - use bash/zsh
+2. **Port Conflicts**: Ensure ports 5173 and 4000 are available
+3. **TypeScript Compilation**: API requires `ts-node` for development
+4. **Background Process Management**: Use `npm run test:cleanup` to stop servers
 
-### Typography
-- **Font Family**: Match normalscience.com's font choices
-- **Font Weights**: Use consistent font weight hierarchy
-- **Font Sizes**: Maintain typographic scale from reference site
+### Fallback Development Method
+If automated scripts fail:
+1. Start API: `cd api && npm run dev` (in separate terminal)
+2. Start Web: `cd web && npm run dev` (in separate terminal)
+3. Verify: `curl http://localhost:4000/healthz`
 
-### Layout & Spacing
-- **Grid System**: Follow normalscience.com's layout patterns
-- **Spacing**: Use consistent spacing scale
-- **Component Sizing**: Match existing component dimensions
+## Error Recovery
 
-### Interactive Elements
-- **Button Styles**: Match normalscience.com's button design
-- **Form Elements**: Use consistent input styling
-- **Hover States**: Match existing hover interactions
-- **Focus States**: Ensure accessibility while maintaining design consistency
+### If Authentication Fails
+1. Check environment variables are loaded
+2. Verify Cognito configuration
+3. Test with demo credentials first
+4. Check browser console for detailed errors
+
+### If Development Servers Fail
+1. Check for port conflicts
+2. Verify TypeScript compilation
+3. Use manual server startup as fallback
+4. Check for background process conflicts
 
 ## Authentication Troubleshooting
 
@@ -610,6 +711,30 @@ try {
 - Check CORS headers in preflight requests
 - Look for PKCE code_verifier mismatches
 ```
+
+## Design Integration Requirements
+
+### Color Scheme
+- **Primary Colors**: Must match normalscience.com's primary color palette
+- **Background Colors**: Match the existing site's background treatment
+- **Text Colors**: Ensure proper contrast ratios with normalscience.com's color scheme
+- **Accent Colors**: Use normalscience.com's accent colors for interactive elements
+
+### Typography
+- **Font Family**: Match normalscience.com's font choices
+- **Font Weights**: Use consistent font weight hierarchy
+- **Font Sizes**: Maintain typographic scale from reference site
+
+### Layout & Spacing
+- **Grid System**: Follow normalscience.com's layout patterns
+- **Spacing**: Use consistent spacing scale
+- **Component Sizing**: Match existing component dimensions
+
+### Interactive Elements
+- **Button Styles**: Match normalscience.com's button design
+- **Form Elements**: Use consistent input styling
+- **Hover States**: Match existing hover interactions
+- **Focus States**: Ensure accessibility while maintaining design consistency
 
 ## Future Enhancements
 

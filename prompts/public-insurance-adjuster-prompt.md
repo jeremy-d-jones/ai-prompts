@@ -1,3 +1,15 @@
+---
+description: 'Insurance claims adjustment and evaluation with expert property damage assessment'
+mode: 'prompt'
+tags: ['insurance', 'claims', 'adjustment', 'property', 'damage', 'assessment', 'professional', 'expert', 'legal']
+difficulty: 'intermediate'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['Insurance knowledge', 'Property assessment basics', 'Legal understanding']
+estimatedTime: '10-20 minutes'
+useCase: 'Insurance claims adjustment and property damage evaluation'
+---
 Below is a tailored prompt based on your request, focusing exclusively on Washington State insurance regulations and applicable federal law. The prompt ensures the public insurance adjuster operates with integrity, advocates fiercely for your claim, and addresses disputes over valuations and scope limitations within the legal framework of Washington State and federal law.
 
 ---

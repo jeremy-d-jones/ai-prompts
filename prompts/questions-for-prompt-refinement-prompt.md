@@ -1,3 +1,15 @@
+---
+description: 'Framework for improving and refining prompts through targeted questions and analysis'
+mode: 'prompt'
+tags: ['prompt-engineering', 'ai', 'refinement', 'optimization', 'questions', 'analysis', 'improvement']
+difficulty: 'intermediate'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['Basic prompt engineering', 'AI concepts']
+estimatedTime: '10-20 minutes'
+useCase: 'Improving existing prompts through systematic analysis and refinement'
+---
 # Questions for Prompt Refinement
 
 Append entries with:

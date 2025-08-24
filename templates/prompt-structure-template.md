@@ -1,5 +1,18 @@
 
 
+---
+description: 'Guidelines for structuring effective AI prompts with consistent formatting'
+mode: 'template'
+tags: ['prompt-engineering', 'template', 'structure', 'guidelines', 'formatting']
+difficulty: 'beginner'
+author: 'Jeremy D. Jones'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+prerequisites: ['Basic AI concepts']
+estimatedTime: '5-10 minutes'
+useCase: 'Creating well-structured prompts with consistent formatting'
+reusable: true
+---
 ## **Part 2 – Extended Specification (saved in project storage)**
 
 *(Full detail, referenced but not always loaded)*
