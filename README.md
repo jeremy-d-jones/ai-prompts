@@ -103,24 +103,6 @@ All prompts in this collection follow these standards:
 - Properly formatted - Consistent markdown structure and styling
 - Comprehensive - Include context, constraints, and expected outputs
 
-## Contributing
-
-We welcome contributions to improve existing prompts or add new ones. When contributing:
-
-1. **Follow the existing structure** and quality standards
-2. **Test your prompts** with multiple AI assistants when possible
-3. **Include clear documentation** about the prompt's purpose and usage
-4. **Use descriptive filenames** that clearly indicate the prompt's function
-5. **Organize by category** - place prompts in the appropriate category section
-
-### Contribution Guidelines
-
-- Prompts should be immediately usable without modification
-- Include example outputs or expected results when helpful
-- Maintain professional tone and clear instructions
-- Avoid prompts that could be used for harmful purposes
-- Test with different AI models to ensure compatibility
-
 ## Technical Details
 
 - **Format**: Markdown (.md) files for easy reading and copying
