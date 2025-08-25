@@ -1,4 +1,4 @@
----
+gi---
 description: 'Full-stack chat application with quantum mechanics theming and AWS Cognito authentication'
 mode: 'prompt'
 tags: ['react', 'typescript', 'nodejs', 'express', 'aws', 'cognito', 'fullstack', 'chat', 'authentication', 'tailwind', 'vite']
