@@ -10,7 +10,6 @@ prerequisites: ['React', 'TypeScript', 'AI concepts', 'Prompt engineering basics
 estimatedTime: '25-45 minutes'
 useCase: 'Building an AI-powered application for prompt creation and management'
 ---
-# Prompt Package: Codex Prompt-Builder App
 
 ## HEADER
 
@@ -21,65 +20,55 @@ useCase: 'Building an AI-powered application for prompt creation and management'
 * **created:** 2025-08-13
 * **updated:** 2025-08-13
 * **tags:** codex, prompt-engineering, generator, cli, web, typescript, react, node
-* **summary:** Instruct Codex to generate an application that collects user inputs (frameworks, style choices, inspirations, end goals, etc.) and synthesizes a reusable Prompt Package and/or single-shot prompt from those inputs.
+* **summary:** Instruct Codex to generate an application that collects user inputs and synthesizes reusable Prompt Packages and/or single-shot prompts
 
 ---
 
 ## INTERFACES
 
-### Inputs (to the generated app)
+### Inputs
+* **project_name** (string) — Human-friendly name for the prompt/app
+* **target_framework** (enum) — react, nextjs, node-cli, python-cli, fastapi, express, none
+* **output_target** (enum) — single_prompt, prompt_package_json, both
+* **style_choices** (json) — Tone, formatting preferences, constraints
+* **inspirations** (json) — List of URLs, quotes, or references
+* **audience** (enum) — engineer, designer, executive, general
+* **end_goals** (string) — What the generated prompt should make the model produce/do
+* **constraints** (json) — "no external web calls," "deterministic steps," "include tests," etc.
+* **variables** (json) — Domain-specific variables the prompt should expose
+* **reusable_blocks** (json) — Names of blocks to include from standard library
+* **assembly_order** (array) — Explicit order of blocks, if user wants to override defaults
 
-* **project\_name** (string) — human-friendly name for the prompt/app.
-* **target\_framework** (enum) — `react`, `nextjs`, `node-cli`, `python-cli`, `fastapi`, `express`, `none`.
-* **output\_target** (enum) — `single_prompt`, `prompt_package_json`, `both`.
-* **style\_choices** (json) — tone, formatting preferences, constraints (e.g., “concise; bullet-first; dev-ready”).
-* **inspirations** (json) — list of URLs, short quotes, or references (e.g., “Kuhn’s *normal science* vibe; warm paper aesthetic”).
-* **audience** (enum) — `engineer`, `designer`, `executive`, `general`.
-* **end\_goals** (string) — what the generated prompt should make the model produce/do.
-* **constraints** (json) — “no external web calls,” “deterministic steps,” “include tests,” etc.
-* **variables** (json) — domain-specific variables the prompt should expose (names, types, defaults, validation rules).
-* **reusable\_blocks** (json) — names of blocks to include from a standard library (e.g., `safety-guardrails`, `output-contract`, `reasoning-discipline`, `error-handling`, `evaluation-checklist`).
-* **assembly\_order** (array) — explicit order of blocks, if the user wants to override defaults.
-
-### Outputs (from the generated app)
-
+### Outputs
 * **Single-shot prompt** (string) OR
-* **Prompt Package** (JSON or Markdown) following the structure below: `HEADER`, `INTERFACES`, `BLOCKS`, `ASSEMBLY`, `VARIABLES`, `STYLE GUIDE`, `TESTS`, `CHANGELOG`.
+* **Prompt Package** (JSON or Markdown) following the structure: HEADER, INTERFACES, BLOCKS, ASSEMBLY, VARIABLES, STYLE GUIDE, TESTS, CHANGELOG
 
 ### Assumptions
-
-* The user’s “Extended Specification” is available in project storage and defines the Prompt Package structure and workflow rules.
-* If the user selects a UI framework, Codex should scaffold a minimal app to collect inputs and export outputs.
+* User's "Extended Specification" is available in project storage and defines the Prompt Package structure and workflow rules
+* If user selects a UI framework, Codex should scaffold a minimal app to collect inputs and export outputs
 
 ### Non-goals
-
-* Building a full backend with auth or persistence beyond local file export.
-* Visual polish beyond minimal, functional UI (unless user explicitly requests).
+* Building a full backend with auth or persistence beyond local file export
+* Visual polish beyond minimal, functional UI (unless user explicitly requests)
 
 ---
 
 ## BLOCKS
 
-### \[block]
-
-**block\_id:** system-mission
+### [block]
+**block_id:** system-mission
 **role:** system
-**purpose:** Set Codex’s mission
+**purpose:** Set Codex's mission
 **content:**
-
 ```
 You are Codex generating an application that turns user inputs into a fully structured Prompt Package and/or single-shot prompt for downstream LLMs. Prioritize modularity, reproducibility, and auditability. All logic should be explicit and deterministic. Generate production-ready code with clear file structure, scripts, and inline docs.
 ```
 
----
-
-### \[block]
-
-**block\_id:** developer-app-spec
+### [block]
+**block_id:** developer-app-spec
 **role:** developer
 **purpose:** App spec (CLI + optional web UI)
 **content:**
-
 ```
 Build a Node.js TypeScript project with two deliverables:
 
@@ -101,7 +90,7 @@ Build a Node.js TypeScript project with two deliverables:
 2) Optional web UI (if target_framework in {react, nextjs}):
    - Minimal form with sections: Project, Audience & Goals, Style, Inspirations, Variables, Blocks, Assembly.
    - Live preview pane that renders the Prompt Package.
-   - Export buttons: “Download Prompt”, “Download Package (JSON/MD)”.
+   - Export buttons: "Download Prompt", "Download Package (JSON/MD)".
 
 General:
 - Use ESM TypeScript, `tsx` for dev, `vitest` for tests, and `eslint`.
@@ -110,15 +99,11 @@ General:
 - No external network calls; all logic is local.
 ```
 
----
-
-### \[block]
-
-**block\_id:** developer-core-logic
+### [block]
+**block_id:** developer-core-logic
 **role:** developer
 **purpose:** Synthesis logic for Prompt Package and single prompt
 **content:**
-
 ```
 Implement a pure function `synthesizePackage(inputs: Inputs): PromptPackage` that:
 - Populates HEADER from inputs (name, version=0.1.0, status=draft, timestamps).
@@ -137,18 +122,14 @@ Implement a pure function `synthesizePackage(inputs: Inputs): PromptPackage` tha
 
 Also implement `renderSinglePrompt(pkg: PromptPackage): string` that:
 - Renders a single prompt composed of selected blocks in `assembly_order`.
-- Inlines variables with {{PLACEHOLDERS}} and includes a short “FILL THESE” checklist.
+- Inlines variables with {{PLACEHOLDERS}} and includes a short "FILL THESE" checklist.
 ```
 
----
-
-### \[block]
-
-**block\_id:** developer-templates
+### [block]
+**block_id:** developer-templates
 **role:** developer
 **purpose:** Reusable block templates
 **content:**
-
 ```
 Provide block templates in `src/lib/blocks` with lightweight params:
 - safety-guardrails
@@ -165,88 +146,64 @@ Each template exports:
 Include JSDoc for expected params.
 ```
 
----
-
-### \[block]
-
-**block\_id:** developer-validation
+### [block]
+**block_id:** developer-validation
 **role:** developer
 **purpose:** Input validation & DX
 **content:**
-
 ```
 - Validate enums and JSON shapes; show actionable errors.
 - Provide sample JSON files in /examples for style, inspirations, variables, blocks, and assembly.
 - Add `--preset quickstart` that loads a ready-made configuration.
 ```
 
----
-
-### \[block]
-
-**block\_id:** reasoning-discipline
+### [block]
+**block_id:** reasoning-discipline
 **role:** developer
 **purpose:** Enforce explicit, stepwise logic in assembly
 **content:**
-
 ```
 - Ensure every included block has a stated purpose and dependency-free content.
 - Require assembly to be topologically ordered; fail if cycles detected.
 - Prefer explicit rules over heuristics; no hidden assumptions.
 ```
 
----
-
-### \[block]
-
-**block\_id:** style-tone
+### [block]
+**block_id:** style-tone
 **role:** developer
 **purpose:** Defaults for tone & formatting if user provides none
 **content:**
-
 ```
 - Tone: direct, technical, concise; bullet-first; numbered steps for procedures.
 - Formatting: compact sections; code fences for code; headings for major sections.
 - Clarity: avoid purple prose; name assumptions; call out limits.
 ```
 
----
-
-### \[block]
-
-**block\_id:** output-contract
+### [block]
+**block_id:** output-contract
 **role:** developer
 **purpose:** Make outputs deterministic and checkable
 **content:**
-
 ```
 - Single-shot prompt must declare intended model role, inputs, constraints, and output format.
 - Prompt Package must be valid per internal TS types; run `vitest` schema checks.
 ```
 
----
-
-### \[block]
-
-**block\_id:** error-handling
+### [block]
+**block_id:** error-handling
 **role:** developer
 **purpose:** Fail clearly and recoverably
 **content:**
-
 ```
 - On invalid input: show errors + suggest minimal fixes; exit non-zero in CLI.
 - In UI: inline field errors with tooltips and example values.
 ```
 
----
-
-### \[block]
-
-**block\_id:** evaluation-checklist
+### [block]
+**block_id:** evaluation-checklist
 **role:** developer
 **purpose:** Quick QA before export
 **content:**
-
 ```
 - Does the mission align with end_goals?
 - Are variables named, typed, validated?
@@ -360,7 +317,7 @@ rendering:
 **Instruction to Codex (verbatim):**
 
 ```
-You are Codex. Generate a TypeScript project that implements the “codex-prompt-builder-app” Prompt Package above.
+You are Codex. Generate a TypeScript project that implements the "codex-prompt-builder-app" Prompt Package above.
 
 Deliver:
 1) A Node.js TypeScript CLI (ESM) named `promptgen` with commands/flags exactly as specified.
@@ -396,7 +353,3 @@ Rules:
 Finally:
 - Print a short README.md including quickstart, examples, and how to extend blocks.
 ```
-
----
-
-If you want, I can also produce a minimal **preset** JSON you can feed to the CLI for a “Normal Science Company” aesthetic and Kuhn-inspired tone.

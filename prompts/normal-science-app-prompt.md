@@ -10,69 +10,129 @@ prerequisites: ['React', 'TypeScript', 'Node.js', 'AWS basics', 'Tailwind CSS', 
 estimatedTime: '20-40 minutes'
 useCase: 'Building a production-ready chat application with authentication'
 ---
-You are an expert full-stack engineer. Build a minimal app that runs locally on your laptop with production-ready architecture for AWS deployment.
 
-**IMPORTANT**: When you create any code or files, save this exact prompt as `original-prompt-$(git rev-parse --short HEAD).md` in the root directory of the project to preserve the original instructions with version tracking.
+## HEADER
 
-## Prerequisites
+* **name:** normal-science-app
+* **version:** 1.0.0
+* **status:** stable
+* **owner:** Jeremy D. Jones
+* **created:** 2025-01-XX
+* **updated:** 2025-01-XX
+* **tags:** react, typescript, nodejs, express, aws, cognito, fullstack, chat, authentication, tailwind, vite
+* **summary:** Production-ready full-stack chat application with quantum mechanics theming, AWS Cognito authentication, and design system matching normalscience.com
 
-### Required AWS Resources (Must be created first)
+---
+
+## INTERFACES
+
+### Inputs
+* **chat_messages** (string) — User chat input with validation (max 1000 characters)
+* **authentication_state** (enum) — unauthenticated, authenticating, authenticated, error
+* **environment** (enum) — development, production
+* **design_theme** (json) — Quantum mechanics theming with double-slit experiment background
+
+### Outputs
+* **Chat responses** (json) — Standardized API responses with success/error handling
+* **Authentication flow** — Complete Cognito OAuth flow with session management
+* **Web application** — React SPA with quantum mechanics theming
+* **API endpoints** — Express backend with health and chat endpoints
+
+### Assumptions
+* User has AWS Cognito User Pool and App Client configured
+* User has AWS Systems Manager Parameter Store access
+* User wants to deploy to normalscience.com domain
+* Design system should match existing normalscience.com aesthetics
+
+### Non-goals
+* Complex chat features beyond basic messaging
+* User registration (handled by Cognito)
+* Message persistence or history
+* Real-time features or WebSocket connections
+
+---
+
+## BLOCKS
+
+### [block]
+**block_id:** system-mission
+**role:** system
+**purpose:** Define the expert full-stack engineer's mission
+**content:**
+```
+You are an expert full-stack engineer. Build a minimal app that runs locally on your laptop with production-ready architecture for AWS deployment. The application should be a chat interface with quantum mechanics theming, AWS Cognito authentication, and design system matching normalscience.com.
+```
+
+### [block]
+**block_id:** prerequisites-setup
+**role:** developer
+**purpose:** Define required AWS resources and pre-development setup
+**content:**
+```
+Prerequisites Setup:
+Required AWS Resources (Must be created first):
 - AWS Cognito User Pool with custom domain (auth.normalscience.com)
 - Cognito App Client configured with OAuth flows
 - AWS Systems Manager Parameter Store parameters
 - IAM permissions for Parameter Store access
 
-### Pre-Development Setup
+Pre-Development Setup:
 1. Create Cognito User Pool and App Client
 2. Store credentials in Parameter Store:
-   ```bash
    aws ssm put-parameter --name "/normalscience/cognito/authority" --value "..." --type "SecureString"
    aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "..." --type "SecureString"
-   ```
 3. Verify credentials are accessible before starting development:
-   ```bash
    aws ssm get-parameter --name "/normalscience/cognito/authority" --with-decryption --region us-east-1
-   ```
 
-### Local Environment Requirements
+Local Environment Requirements:
 - Node.js 20+ installed
 - Git configured
 - AWS CLI configured with appropriate permissions
 - Bash/zsh terminal (PowerShell may have issues with some commands)
+```
 
-## Architecture Overview
-
-- Two directories: `/web` and `/api`
-- Production deployment to `normalscience.com` domain
+### [block]
+**block_id:** architecture-overview
+**role:** developer
+**purpose:** Define the application architecture and technology stack
+**content:**
+```
+Architecture Overview:
+- Two directories: /web and /api
+- Production deployment to normalscience.com domain
 - AWS Cognito authentication with custom domain (auth.normalscience.com)
-- **Design Language**: Must match normalscience.com's current design system
+- Design Language: Must match normalscience.com's current design system
 
-## Implementation Order
+Implementation Order:
+1. Basic Setup: Project structure, dependencies, configuration
+2. API Development: Health endpoint, chat endpoint, validation
+3. Web Foundation: Routing, basic pages, design system
+4. Authentication: Cognito integration, callback handling
+5. Integration: Connect frontend to backend
+6. Testing: E2E tests, error handling
+7. Polish: Performance, accessibility, design consistency
+```
 
-1. **Basic Setup**: Project structure, dependencies, configuration
-2. **API Development**: Health endpoint, chat endpoint, validation
-3. **Web Foundation**: Routing, basic pages, design system
-4. **Authentication**: Cognito integration, callback handling
-5. **Integration**: Connect frontend to backend
-6. **Testing**: E2E tests, error handling
-7. **Polish**: Performance, accessibility, design consistency
+### [block]
+**block_id:** design-system
+**role:** developer
+**purpose:** Define comprehensive design system requirements
+**content:**
+```
+Design System:
+Colors:
+- Parchment: #f5f1e8 (background)
+- Ink: #2d2d2d (primary text)
+- Sunlight: #e2c275 (accent)
+- Navy: #274060 (supplemental)
+- Dark Green: #2d5a27 (supplemental)
+- Maroon: #6a0f17 (supplemental)
 
-## Design System
+Typography:
+- Headings: Fira Sans
+- Body: IBM Plex Serif
 
-### Colors
-- **Parchment**: `#f5f1e8` (background)
-- **Ink**: `#2d2d2d` (primary text)
-- **Sunlight**: `#e2c275` (accent)
-- **Navy**: `#274060` (supplemental)
-- **Dark Green**: `#2d5a27` (supplemental)
-- **Maroon**: `#6a0f17` (supplemental)
-
-### Typography
-- **Headings**: Fira Sans
-- **Body**: IBM Plex Serif
-
-### Tailwind Configuration
-```javascript
+Tailwind Configuration:
 module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
@@ -92,51 +152,23 @@ module.exports = {
     }
   }
 }
-```
 
-### Font Loading
-```html
-<!-- In index.html -->
+Font Loading:
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap" rel="stylesheet">
 ```
 
-## Frontend (/web) - React + Vite + TypeScript + Tailwind
-
-### Pages & Features
-- **Landing page**: Login button (AWS Cognito authentication)
-- **Chat page**: Textbox, Send button, transcript area (protected content)
-  - Messages are ephemeral (not persisted)
-  - Calls POST /api/chat and displays response
-  - Handles API failures with user-friendly error messages
-  - Disables Send button during API calls
-  - **Direct access after login** (no intermediate welcome page)
-
-### Technical Requirements (Prioritized)
-
-#### Must Have (MVP)
-- **State Management**: React Context for global state (authentication, user session), local state for component-specific data
-- **Error Handling**: Wrap main App component in React error boundary with fallback UI and reload option
-- **Loading States**: Show loading indicators during async operations (login, API calls), disable buttons during operations
-- **Accessibility**: Semantic HTML elements, alt text for images, keyboard navigation, basic ARIA labels, color contrast ratios
-- **Responsive Design**: Mobile-first approach using Tailwind responsive utilities across mobile, tablet, and desktop breakpoints
-
-#### Should Have (Enhanced)
-- **Performance**: Optimize bundle size, lazy load components if needed, basic image optimization
-
-### Design System Requirements
-- **Company Branding**: "The Normal Science Company" (not "Normal Science App") - must appear on one line
-- **No Taglines**: No descriptive text, slogans, or subtitles under the company heading
-- **Color Scheme**: Must match normalscience.com's current design language
-- **Typography**: Consistent with normalscience.com's font choices
-- **Layout**: Maintain visual consistency with existing site design
-- **Background**: Artistic representation of the double-slit experiment photon detection pattern
-
-### Background Texture Implementation
+### [block]
+**block_id:** background-texture
+**role:** developer
+**purpose:** Define quantum mechanics background texture implementation
+**content:**
+```
+Background Texture Implementation:
 The background represents the photon detection pattern from the double-slit experiment - where individual photons create an interference pattern over time. This creates a subtle, artistic representation of quantum mechanics.
 
-```css
+CSS Implementation:
 body {
   background-color: #f5f1e8;
   background-image: 
@@ -150,7 +182,7 @@ body {
   background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px, 100px 100px;
 }
 
-/* Subtle interference pattern overlay */
+Subtle interference pattern overlay:
 body::before {
   content: '';
   position: fixed;
@@ -163,82 +195,116 @@ body::before {
   pointer-events: none;
   z-index: -1;
 }
-```
 
-### Background Texture Testing
+Background Texture Testing:
 - Test on multiple browsers (Chrome, Firefox, Safari)
 - Verify texture is visible on first page load
 - Test with different screen resolutions
 - Ensure texture doesn't interfere with text readability
 - Verify texture creates the intended quantum interference pattern effect
-- **CRITICAL**: Texture must be immediately visible without cache clearing or hard refresh
+- CRITICAL: Texture must be immediately visible without cache clearing or hard refresh
+```
 
-## Backend (/api) - Node 20 + Express + TypeScript
+### [block]
+**block_id:** frontend-requirements
+**role:** developer
+**purpose:** Define comprehensive frontend requirements
+**content:**
+```
+Frontend Requirements (/web) - React + Vite + TypeScript + Tailwind:
 
-### API Endpoints
-- **GET /healthz**: `{ success: true, data: { status: "ok" }, timestamp: string }`
-- **POST /api/chat**: Accept `{ prompt: string }`, return standardized response format:
-  ```typescript
+Pages & Features:
+- Landing page: Login button (AWS Cognito authentication)
+- Chat page: Textbox, Send button, transcript area (protected content)
+  - Messages are ephemeral (not persisted)
+  - Calls POST /api/chat and displays response
+  - Handles API failures with user-friendly error messages
+  - Disables Send button during API calls
+  - Direct access after login (no intermediate welcome page)
+
+Technical Requirements (Prioritized):
+Must Have (MVP):
+- State Management: React Context for global state (authentication, user session), local state for component-specific data
+- Error Handling: Wrap main App component in React error boundary with fallback UI and reload option
+- Loading States: Show loading indicators during async operations (login, API calls), disable buttons during operations
+- Accessibility: Semantic HTML elements, alt text for images, keyboard navigation, basic ARIA labels, color contrast ratios
+- Responsive Design: Mobile-first approach using Tailwind responsive utilities across mobile, tablet, and desktop breakpoints
+
+Should Have (Enhanced):
+- Performance: Optimize bundle size, lazy load components if needed, basic image optimization
+
+Design System Requirements:
+- Company Branding: "The Normal Science Company" (not "Normal Science App") - must appear on one line
+- No Taglines: No descriptive text, slogans, or subtitles under the company heading
+- Color Scheme: Must match normalscience.com's current design language
+- Typography: Consistent with normalscience.com's font choices
+- Layout: Maintain visual consistency with existing site design
+- Background: Artistic representation of the double-slit experiment photon detection pattern
+```
+
+### [block]
+**block_id:** backend-requirements
+**role:** developer
+**purpose:** Define comprehensive backend requirements
+**content:**
+```
+Backend Requirements (/api) - Node 20 + Express + TypeScript:
+
+API Endpoints:
+- GET /healthz: { success: true, data: { status: "ok" }, timestamp: string }
+- POST /api/chat: Accept { prompt: string }, return standardized response format:
   {
     success: boolean,
     data?: { reply: string, prompt: string },
     error?: string,
     timestamp: string
   }
-  ```
 
-### Technical Requirements (Prioritized)
+Technical Requirements (Prioritized):
+Must Have (MVP):
+- Validation: Basic input validation for chat messages (length, content type)
+- Error Handling: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
+- Logging: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
 
-#### Must Have (MVP)
-- **Validation**: Basic input validation for chat messages (length, content type)
-- **Error Handling**: Network failures, HTTP errors, JSON parsing. Log errors to console for CloudWatch integration
-- **Logging**: Structured console logging (console.log, console.error, console.warn with timestamps). Future CloudWatch integration via AWS SDK v3
+Should Have (Enhanced):
+- Rate Limiting: Basic rate limiting on chat endpoint (100 requests per minute per IP)
 
-#### Should Have (Enhanced)
-- **Rate Limiting**: Basic rate limiting on chat endpoint (100 requests per minute per IP)
-
-### Security Requirements
-- **Input Validation**: Basic validation for chat messages
-  ```typescript
-  const validateChatInput = (prompt: string) => {
-    if (!prompt || typeof prompt !== 'string') {
-      throw new Error('Invalid input: prompt must be a non-empty string');
-    }
-    if (prompt.length > 1000) {
-      throw new Error('Invalid input: prompt too long (max 1000 characters)');
-    }
-    // Basic content validation
-    if (prompt.trim().length === 0) {
-      throw new Error('Invalid input: prompt cannot be empty');
-    }
+Security Requirements:
+Input Validation:
+const validateChatInput = (prompt: string) => {
+  if (!prompt || typeof prompt !== 'string') {
+    throw new Error('Invalid input: prompt must be a non-empty string');
   }
-  ```
-- **Authentication**: Secure AWS Cognito authentication implementation
+  if (prompt.length > 1000) {
+    throw new Error('Invalid input: prompt too long (max 1000 characters)');
+  }
+  if (prompt.trim().length === 0) {
+    throw new Error('Invalid input: prompt cannot be empty');
+  }
+}
+- Authentication: Secure AWS Cognito authentication implementation
+```
 
-## Authentication (AWS Cognito)
+### [block]
+**block_id:** authentication-setup
+**role:** developer
+**purpose:** Define comprehensive AWS Cognito authentication setup
+**content:**
+```
+Authentication Setup (AWS Cognito):
 
-### Environment Variables Setup
-
-#### Global Environment (Add to ~/.zshrc)
-```bash
-# Normal Science App Cognito Configuration
-# Replace these placeholder values with your actual Cognito credentials
+Environment Variables Setup:
+Global Environment (Add to ~/.zshrc):
 export NORMAL_SCIENCE_COGNITO_AUTHORITY="https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID"
 export NORMAL_SCIENCE_COGNITO_CLIENT_ID="YOUR_CLIENT_ID"
 export NORMAL_SCIENCE_COGNITO_DOMAIN="https://auth.normalscience.com"
-```
 
-#### Local Environment (.env.local)
-```bash
+Local Environment (.env.local):
 VITE_COGNITO_AUTHORITY=$NORMAL_SCIENCE_COGNITO_AUTHORITY
 VITE_COGNITO_CLIENT_ID=$NORMAL_SCIENCE_COGNITO_CLIENT_ID
 VITE_COGNITO_DOMAIN=$NORMAL_SCIENCE_COGNITO_DOMAIN
-```
 
-#### Environment Variable Validation
-The application should validate that all required environment variables are present:
-```typescript
-// Add to auth configuration
+Environment Variable Validation:
 if (!import.meta.env.VITE_COGNITO_AUTHORITY) {
   throw new Error('Missing VITE_COGNITO_AUTHORITY environment variable');
 }
@@ -248,78 +314,15 @@ if (!import.meta.env.VITE_COGNITO_CLIENT_ID) {
 if (!import.meta.env.VITE_COGNITO_DOMAIN) {
   throw new Error('Missing VITE_COGNITO_DOMAIN environment variable');
 }
-```
 
-### Cognito Configuration
-```typescript
-import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+Cognito Configuration:
+- Custom Domain: https://auth.normalscience.com
+- CNAME Record: auth.normalscience.com → Cognito alias target
+- Allowed URLs:
+  - Callback URLs: http://localhost:5173/auth/callback (dev), https://normalscience.com/auth/callback (prod)
+  - Sign-out URLs: http://localhost:5173/ (dev), https://normalscience.com/ (prod)
 
-const ssmClient = new SSMClient({ region: "us-east-1" });
-
-const getParameter = async (parameterName: string): Promise<string> => {
-  try {
-    const command = new GetParameterCommand({
-      Name: parameterName,
-      WithDecryption: true,
-    });
-    const response = await ssmClient.send(command);
-    return response.Parameter?.Value || "";
-  } catch (error) {
-    console.error(`Error fetching parameter ${parameterName}:`, error);
-    return "";
-  }
-};
-
-const getAuthConfig = async () => {
-  const isDev = import.meta.env.DEV;
-  
-  if (isDev) {
-    // Use local environment variables for development
-    return {
-      authority: import.meta.env.VITE_COGNITO_AUTHORITY,
-      client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
-      redirect_uri: "http://localhost:5173/auth/callback",
-      response_type: "code",
-      scope: "openid email",
-      post_logout_redirect_uri: "http://localhost:5173/",
-      loadUserInfo: false,
-      automaticSilentRenew: true,
-      silent_redirect_uri: "http://localhost:5173/silent-renew.html",
-    };
-  } else {
-    // Use Parameter Store for production
-    const authority = await getParameter("/normalscience/cognito/authority");
-    const clientId = await getParameter("/normalscience/cognito/client-id");
-    
-    return {
-      authority,
-      client_id: clientId,
-      redirect_uri: "https://normalscience.com/auth/callback",
-      response_type: "code",
-      scope: "openid email",
-      post_logout_redirect_uri: "https://normalscience.com/",
-      loadUserInfo: false,
-      automaticSilentRenew: true,
-      silent_redirect_uri: "https://normalscience.com/silent-renew.html",
-    };
-  }
-};
-```
-
-### Cognito Domain
-- **Custom Domain**: `https://auth.normalscience.com`
-- **CNAME Record**: `auth.normalscience.com` → Cognito alias target
-
-### Allowed URLs (Cognito App Client Configuration)
-- **Callback URLs**:
-  - `http://localhost:5173/auth/callback` (development)
-  - `https://normalscience.com/auth/callback` (production)
-- **Sign-out URLs**:
-  - `http://localhost:5173/` (development)
-  - `https://normalscience.com/` (production)
-
-### Dependencies Required
-```json
+Dependencies Required:
 {
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.0.0",
@@ -330,25 +333,23 @@ const getAuthConfig = async () => {
     "react-router-dom": "^6.0.0"
   }
 }
-```
 
-### Implementation Requirements
-- **Auth Provider**: Wrap App with AuthProvider from react-oidc-context
-- **Session Management**: Use Cognito tokens with automatic refresh
-- **Loading States**: Handle async authentication with loading states
-- **Error Handling**: Auth failures (network errors, token expiration)
-- **TypeScript**: Interfaces matching Cognito user structure
-- **Direct Redirect**: After login, redirect directly to protected chat content (no intermediate pages)
+Implementation Requirements:
+- Auth Provider: Wrap App with AuthProvider from react-oidc-context
+- Session Management: Use Cognito tokens with automatic refresh
+- Loading States: Handle async authentication with loading states
+- Error Handling: Auth failures (network errors, token expiration)
+- TypeScript: Interfaces matching Cognito user structure
+- Direct Redirect: After login, redirect directly to protected chat content (no intermediate pages)
 
-### Cognito App Client Configuration Requirements
-- **Client Type**: Public (no client secret)
-- **OAuth Flows**: Authorization code grant
-- **Callback URLs**: Must include exact development and production URLs
-- **Allowed OAuth Scopes**: openid, email
-- **PKCE**: Required for public clients (handled automatically by oidc-client-ts)
+Cognito App Client Configuration Requirements:
+- Client Type: Public (no client secret)
+- OAuth Flows: Authorization code grant
+- Callback URLs: Must include exact development and production URLs
+- Allowed OAuth Scopes: openid, email
+- PKCE: Required for public clients (handled automatically by oidc-client-ts)
 
-### IAM Permissions Required
-```json
+IAM Permissions Required:
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -366,386 +367,146 @@ const getAuthConfig = async () => {
 }
 ```
 
-## Environment & Configuration
+### [block]
+**block_id:** environment-configuration
+**role:** developer
+**purpose:** Define environment and configuration requirements
+**content:**
+```
+Environment & Configuration:
 
-### Development
-- **CORS**: Local development only - origin http://localhost:5173, methods GET/POST
-- **Proxy**: Vite dev proxy `/api` → `http://localhost:4000`
-- **Ports**: Hardcoded 5173 (web) and 4000 (api)
+Development:
+- CORS: Local development only - origin http://localhost:5173, methods GET/POST
+- Proxy: Vite dev proxy /api → http://localhost:4000
+- Ports: Hardcoded 5173 (web) and 4000 (api)
 
-### Production
-- **Domain**: normalscience.com (eliminates CORS requirement)
-- **Environment Detection**: Use NODE_ENV for environment-specific configurations
-- **No Proxy**: Same-domain deployment
+Production:
+- Domain: normalscience.com (eliminates CORS requirement)
+- Environment Detection: Use NODE_ENV for environment-specific configurations
+- No Proxy: Same-domain deployment
 
-### Production Environment Variables (AWS Parameter Store)
-```bash
-# Store these parameters in AWS Systems Manager Parameter Store
-# Replace placeholder values with your actual Cognito credentials
-
+Production Environment Variables (AWS Parameter Store):
 aws ssm put-parameter --name "/normalscience/cognito/authority" --value "https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID" --type "SecureString"
 aws ssm put-parameter --name "/normalscience/cognito/client-id" --value "YOUR_CLIENT_ID" --type "SecureString"
 aws ssm put-parameter --name "/normalscience/cognito/domain" --value "https://auth.normalscience.com" --type "SecureString"
 
-# To verify parameters:
+To verify parameters:
 aws ssm describe-parameters --parameter-filters "Key=Name,Option=BeginsWith,Values=/normalscience" --region us-east-1
 
-# To retrieve a parameter:
+To retrieve a parameter:
 aws ssm get-parameter --name "/normalscience/cognito/authority" --with-decryption --region us-east-1
 ```
 
-## Dependencies
-
-### Root Dependencies (for enhanced scripts)
-```json
-{
-  "devDependencies": {
-    "concurrently": "^8.0.0",
-    "wait-on": "^7.0.0"
-  }
-}
+### [block]
+**block_id:** prompt-preservation
+**role:** developer
+**purpose:** Define prompt preservation requirement
+**content:**
 ```
-
-### /web Dependencies
-- **Core**: react, react-dom, vite, typescript, @vitejs/plugin-react, tailwindcss, postcss, autoprefixer
-- **Auth**: oidc-client-ts@^2.4.1, react-oidc-context@^2.4.0, @aws-sdk/client-ssm
-- **Routing**: react-router-dom (optional, for callback routes)
-- **Dev**: @types/react, @types/react-dom
-- **Testing**: playwright, @playwright/test
-
-### /api Dependencies
-- **Core**: express, cors
-- **Dev**: typescript, ts-node, nodemon, @types/express, @types/cors
-
-## Configuration
-
-### TypeScript
-- **Strict Mode**: Enable strict mode (strict: true, noImplicitAny: true, strictNullChecks: true) in both /web and /api
-- **/web**: jsx: "react-jsx", moduleResolution: "Bundler"
-- **/api**: CommonJS (no "type": "module"), compile to dist with outDir
-
-### Tailwind
-- **Content**: ["./index.html", "./src/**/*.{ts,tsx}"]
-- **Responsive**: Mobile-first with Tailwind utilities
-- **Custom Colors**: Extend with normalscience.com's color palette
-
-### Build Outputs
-- **/web/dist/**: Vite build output
-- **/api/dist/**: TypeScript compilation
-- **Gitignore**: Both directories
-
-## Scripts
-
-### /web Scripts
-- `"dev": "vite --port 5173"`
-- `"build": "vite build"`
-- `"preview": "vite preview --port 5173"`
-- `"test:e2e": "playwright test"`
-
-### /api Scripts
-- `"dev": "nodemon src/index.ts"`
-- `"build": "tsc"`
-- `"start": "node dist/index.js"`
-
-## Development Server Management
-
-### Background Process Requirements
-- All development servers must be started in background using `&` operator
-- Implement proper health checks before proceeding with tests
-- Use process management for cleanup after testing
-- Never wait for dev servers to "finish" as they are long-running processes
-
-### Required Scripts
-The application must include scripts that handle server management:
-- `npm run dev:all` - Start both servers in background
-- `npm run test:e2e` - Start servers, run tests, cleanup
-- `npm run test:cleanup` - Stop all dev servers
-
-### Enhanced Development Scripts Implementation
-
-#### Root Package.json
-```json
-{
-  "scripts": {
-    "dev:all": "concurrently --kill-others --prefix \"[{name}]\" --names \"API,WEB\" \"cd api && npm run dev\" \"cd web && npm run dev\"",
-    "test:e2e": "npm run dev:all && wait-on -t 30000 http://localhost:4000/healthz http://localhost:5173/index.html && playwright test && npm run test:cleanup",
-    "test:cleanup": "pkill -f 'npm run dev' || pkill -f 'vite' || pkill -f 'nodemon' || true",
-    "install:all": "cd api && npm install && cd ../web && npm install"
-  }
-}
+Prompt Preservation:
+IMPORTANT: When you create any code or files, save this exact prompt as `original-prompt-$(git rev-parse --short HEAD).md` in the root directory of the project to preserve the original instructions with version tracking.
 ```
-
-#### Dependencies Required
-```json
-{
-  "devDependencies": {
-    "concurrently": "^8.0.0",
-    "wait-on": "^7.0.0"
-  }
-}
-```
-
-#### Script Functionality
-- **`dev:all`**: Uses `concurrently` to run both servers simultaneously with clear logging
-- **`test:e2e`**: Starts servers, waits for health endpoints, runs tests, cleans up
-- **`test:cleanup`**: Kills all development processes with fallback options
-- **`install:all`**: Installs dependencies for both API and web projects
-
-### Testing Workflow
-1. Start servers in background with health verification
-2. Run tests or manual verification
-3. Clean up processes when complete
-4. Document any manual steps required for testing
-
-## Testing Strategy
-
-### Phase 1: Basic Functionality (No Auth)
-- Test API endpoints directly
-- Test web app loading and routing
-- Verify design system implementation
-
-### Phase 2: Authentication Integration
-- Test login flow with real credentials
-- Test protected routes
-- Test error handling
-
-### Phase 3: Full E2E Testing
-- Complete user journey testing
-- Performance and accessibility testing
-
-### E2E Testing (Playwright)
-- Test navigation: Landing → Chat (direct after login)
-- Test login flow (click login, verify chat page access)
-- Test chat functionality (send message, verify response)
-- Test logout flow (click logout, verify return to landing)
-- Test error states and API failures
-- Test design consistency with normalscience.com
-- Runs in headless mode for CI/CD compatibility
-
-## Deliverables
-
-### Directory Structure
-```
-/
-├── original-prompt-{git-hash}.md  # This exact prompt with version tracking
-├── web/
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   ├── index.html
-│   ├── .env.local
-│   ├── public/
-│   │   ├── vite.svg
-│   │   └── silent-renew.html
-│   └── src/
-│       ├── main.tsx
-│       ├── App.tsx
-│       ├── config/
-│       │   └── auth.ts
-│       └── pages/
-│           ├── Landing.tsx
-│           ├── Chat.tsx
-│           └── AuthCallback.tsx
-├── api/
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/
-│       ├── index.ts
-│       └── routes/
-│           └── chat.ts
-└── README.md
-```
-
-### Required Files
-- **original-prompt-{git-hash}.md**: This exact prompt saved with git commit hash for version tracking
-- All configuration files (package.json, tsconfig.json, etc.)
-- All source files with proper imports and paths
-- README.md with local development instructions
-
-### Required Files for Authentication
-- `web/public/silent-renew.html` - Required for token refresh
-- `web/src/pages/AuthCallback.tsx` - Optional callback handler
-- `web/.env.local` - Development environment variables
-- `web/public/vite.svg` - Custom favicon
-
-## Validation Checklist
-
-### Before Starting Development
-- [ ] AWS Cognito resources created
-- [ ] Parameter Store variables set
-- [ ] IAM permissions configured
-- [ ] Local development environment ready
-
-### After Each Phase
-- [ ] Basic functionality works
-- [ ] No TypeScript errors
-- [ ] Design system implemented
-- [ ] Error handling in place
-
-## Success Criteria
-
-### Functional Requirements
-- [ ] User can log in via Cognito
-- [ ] User can access protected chat page
-- [ ] User can send messages and receive responses
-- [ ] User can log out and return to landing page
-
-### Technical Requirements
-- [ ] No console errors in browser
-- [ ] All E2E tests pass
-- [ ] Design matches normalscience.com
-- [ ] Background texture visible
-- [ ] Responsive design works
-
-## Quality Gates
-
-- All file imports and paths correct
-- CORS restricted to http://localhost:5173 in development
-- Chat page handles error states properly
-- No external services, env vars, or secrets required
-- E2E tests pass in headless mode
-- TypeScript strict mode enabled and no errors
-- Responsive design works across breakpoints
-- Accessibility requirements met
-- **Design matches normalscience.com's visual language**
-- **Background texture represents double-slit experiment photon detection pattern**
-- **Background Texture**: Must be clearly visible on first page load
-- **Texture Density**: 6 gradient layers with opacity 0.03-0.08 for subtle quantum pattern
-- **Interference Pattern**: Diagonal line overlay represents wave interference
-- **No SVG Dependencies**: Background must not rely on SVG data URLs
-- **Immediate Visibility**: Texture visible without cache clearing or hard refresh
-- **No taglines or descriptive text under company heading**
-
-## Local Development Instructions
-
-### Option 1: Manual Server Management
-1. `cd api && npm install && npm run dev &` (background, runs on http://localhost:4000)
-2. `cd web && npm install && npm run dev &` (background, runs on http://localhost:5173)
-3. Wait 3-5 seconds for servers to initialize
-4. Verify servers: `curl http://localhost:4000/healthz` and `curl http://localhost:5173/`
-5. Open browser to http://localhost:5173
-6. Click Login → Chat (direct access to protected content)
-7. Send a message and confirm response
-8. Run `npm run test:e2e` to verify functionality
-9. Cleanup: `pkill -f "npm run dev"`
-
-### Option 2: Using Enhanced Scripts
-1. `npm run dev:all` (starts both servers in background)
-2. Wait for health checks to pass
-3. Open browser to http://localhost:5173
-4. Test functionality manually or run `npm run test:e2e`
-5. `npm run test:cleanup` (stops all servers)
-
-## Development Server Troubleshooting
-
-### Common Issues
-1. **PowerShell Environment**: Some commands may fail in PowerShell - use bash/zsh
-2. **Port Conflicts**: Ensure ports 5173 and 4000 are available
-3. **TypeScript Compilation**: API requires `ts-node` for development
-4. **Background Process Management**: Use `npm run test:cleanup` to stop servers
-
-### Fallback Development Method
-If automated scripts fail:
-1. Start API: `cd api && npm run dev` (in separate terminal)
-2. Start Web: `cd web && npm run dev` (in separate terminal)
-3. Verify: `curl http://localhost:4000/healthz`
-
-## Error Recovery
-
-### If Authentication Fails
-1. Check environment variables are loaded
-2. Verify Cognito configuration
-3. Test with demo credentials first
-4. Check browser console for detailed errors
-
-### If Development Servers Fail
-1. Check for port conflicts
-2. Verify TypeScript compilation
-3. Use manual server startup as fallback
-4. Check for background process conflicts
-
-## Authentication Troubleshooting
-
-### Common Issues
-1. **400 Bad Request on Token Exchange**: Usually indicates PKCE mismatch or incorrect redirect URI
-2. **CORS Errors**: Check that callback URLs are exactly configured in Cognito
-3. **Silent Renew Failures**: Ensure silent-renew.html exists and is accessible
-4. **Environment Variable Errors**: Missing or incorrect environment variables cause silent failures
-5. **Custom Domain Issues**: Custom domains require explicit metadata configuration
-
-### Debugging Steps
-1. Check browser Network tab for failed requests
-2. Verify environment variables are loaded correctly
-3. Test with standard Cognito hosted UI first
-4. Check Cognito app client configuration
-5. Verify custom domain DNS settings
-6. Check browser console for detailed error messages
-7. Verify redirect URIs match exactly (including trailing slashes)
-
-### Development vs Production Auth Strategy
-- **Development**: Use standard Cognito hosted UI for simplicity and easier debugging
-- **Production**: Use custom domain with explicit metadata configuration for branding
-
-### Error Handling for Token Exchange Failures
-```typescript
-try {
-  await auth.signinCallback();
-} catch (error) {
-  console.error('Token exchange failed:', error);
-  // Handle 400 Bad Request errors specifically
-  if (error.message?.includes('400')) {
-    // Log detailed error information
-    console.error('Token exchange 400 error details:', error);
-  }
-}
-```
-
-### Browser Network Debugging Instructions
-```markdown
-## Debugging Authentication Issues
-- Check browser Network tab for token exchange requests
-- Look for 400 Bad Request errors in token endpoint
-- Verify redirect URIs match exactly (including trailing slashes)
-- Check CORS headers in preflight requests
-- Look for PKCE code_verifier mismatches
-```
-
-## Design Integration Requirements
-
-### Color Scheme
-- **Primary Colors**: Must match normalscience.com's primary color palette
-- **Background Colors**: Match the existing site's background treatment
-- **Text Colors**: Ensure proper contrast ratios with normalscience.com's color scheme
-- **Accent Colors**: Use normalscience.com's accent colors for interactive elements
-
-### Typography
-- **Font Family**: Match normalscience.com's font choices
-- **Font Weights**: Use consistent font weight hierarchy
-- **Font Sizes**: Maintain typographic scale from reference site
-
-### Layout & Spacing
-- **Grid System**: Follow normalscience.com's layout patterns
-- **Spacing**: Use consistent spacing scale
-- **Component Sizing**: Match existing component dimensions
-
-### Interactive Elements
-- **Button Styles**: Match normalscience.com's button design
-- **Form Elements**: Use consistent input styling
-- **Hover States**: Match existing hover interactions
-- **Focus States**: Ensure accessibility while maintaining design consistency
-
-## Future Enhancements
-
-- CloudWatch logging implementation
-- Production environment configurations
-- Advanced error handling and retry logic
-- Performance monitoring and optimization
-- CI/CD pipeline setup
-- **LLM Integration**: Replace placeholder chat with real AI-powered responses
-- **Design System**: Create comprehensive design tokens matching normalscience.com
 
 ---
 
-**Note**: The design system must be extracted from normalscience.com and implemented consistently throughout the application. All visual elements should maintain the same look and feel as the existing site while adding the new chat functionality. The company heading must appear on one line with no taglines or descriptive text underneath. The background texture represents the photon detection pattern from the double-slit experiment, creating a subtle artistic representation of quantum mechanics.
+## ASSEMBLY
+
+```
+assembly_order:
+  - system-mission
+  - prerequisites-setup
+  - architecture-overview
+  - design-system
+  - background-texture
+  - frontend-requirements
+  - backend-requirements
+  - authentication-setup
+  - environment-configuration
+  - prompt-preservation
+inclusion_rules:
+  - Always include system-mission and prerequisites-setup
+  - Include design-system for visual consistency
+  - Include authentication-setup for secure user access
+  - Include environment-configuration for deployment
+  - Include prompt-preservation for version tracking
+rendering:
+  - Create complete project structure with /web and /api directories
+  - Implement quantum mechanics theming and background texture
+  - Set up AWS Cognito authentication flow
+  - Create comprehensive documentation
+  - Configure environment variables and deployment
+```
+
+---
+
+## VARIABLES
+
+```yaml
+- var: CHAT_MESSAGE
+  type: string
+  required: true
+  validate: "max 1000 characters, non-empty"
+- var: AUTHENTICATION_STATE
+  type: enum
+  required: true
+  validate: "unauthenticated|authenticating|authenticated|error"
+- var: ENVIRONMENT
+  type: enum
+  required: false
+  default: "development"
+  validate: "development|production"
+- var: COGNITO_AUTHORITY
+  type: string
+  required: true
+  validate: "cognito-idp.*amazonaws.com.*"
+- var: COGNITO_CLIENT_ID
+  type: string
+  required: true
+  validate: ".*"
+- var: COGNITO_DOMAIN
+  type: string
+  required: true
+  default: "https://auth.normalscience.com"
+  validate: "https://.*"
+- var: WEB_PORT
+  type: int
+  required: false
+  default: 5173
+  validate: "1000-65535"
+- var: API_PORT
+  type: int
+  required: false
+  default: 4000
+  validate: "1000-65535"
+```
+
+---
+
+## STYLE GUIDE
+
+* Use clear, technical language with specific implementation details
+* Include code examples and configuration snippets
+* Structure information hierarchically with clear sections
+* Use consistent formatting for commands, file paths, and variables
+* Include error handling and edge case considerations
+* Maintain professional, production-ready tone
+* Focus on quantum mechanics theming and design consistency
+* Emphasize security and authentication best practices
+
+---
+
+## TESTS
+
+1. **Authentication flow**: Complete Cognito OAuth flow with session management
+2. **Chat functionality**: Send and receive messages with proper validation
+3. **Design system**: Quantum mechanics theming and background texture
+4. **Responsive design**: Mobile-first approach across all breakpoints
+5. **Error handling**: Graceful handling of authentication and API failures
+6. **Environment configuration**: Proper setup for development and production
+7. **Security**: Input validation and secure authentication implementation
+
+---
+
+## CHANGELOG
+
+* **1.0.0 (2025-01-XX)**: Initial version with comprehensive full-stack chat application and quantum mechanics theming
