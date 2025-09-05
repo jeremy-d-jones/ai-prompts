@@ -103,6 +103,7 @@ All prompts in this collection follow these standards:
 - Properly formatted - Consistent markdown structure and styling
 - Comprehensive - Include context, constraints, and expected outputs
 
+
 ## Technical Details
 
 - **Format**: Markdown (.md) files for easy reading and copying
