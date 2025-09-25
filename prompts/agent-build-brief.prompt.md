@@ -3,7 +3,6 @@ description: 'AI agent development briefs and specifications for building intell
 mode: 'prompt'
 tags: ['ai', 'agent', 'development', 'specification', 'brief', 'intelligent-systems', 'automation', 'cursor']
 difficulty: 'advanced'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['AI concepts', 'System design', 'Programming fundamentals', 'Cursor IDE']

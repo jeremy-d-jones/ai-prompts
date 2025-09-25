@@ -21,9 +21,11 @@ Team and project-specific instructions to enhance AI assistant behavior for spec
 
 | Title | Description |
 | ----- | ----------- |
-| [Career Coach Instructions](instructions/career-coach-instructions.md) | Professional career coaching and guidance |
-| [Front-End Web Designer](instructions/front-end-web-designer.md) | Frontend design and user experience prompts |
-| [PR Manager Instructions](instructions/pr-manager-instructions.md) | Public relations and communications management |
+| [AI Architect Instructions](instructions/ai-architect.instructions.md) | Architecture planning and spec-driven workflow |
+| [Career Coach Instructions](instructions/career-coach.instructions.md) | Professional career coaching and guidance |
+| [Front-End Web Designer](instructions/front-end-web-designer.instructions.md) | Frontend design and user experience prompts |
+| [PR Manager Instructions](instructions/pr-manager.instructions.md) | Public relations and communications management |
+| [Terraform Expert Instructions](instructions/terraform-expert.instructions.md) | Expert Terraform guidance for AWS IaC |
 
 ## Reusable Prompts
 
@@ -31,15 +33,15 @@ Task-specific prompts for various development and business use cases.
 
 | Title | Description |
 | ----- | ----------- |
-| [Finance Tracker ETL Pipeline](prompts/finance-tracker-prompt.md) | Automated ETL pipeline for bank statements |
-| [Normal Science App](prompts/normal-science-app-prompt.md) | Full-stack chat application with authentication |
-| [Terraform Learning Platform](prompts/terraform-learning-app-prompt.md) | Interactive infrastructure tutorials |
-| [CV Builder](prompts/cv-builder-prompt.md) | Comprehensive CV and resume builder |
-| [Resume Help](prompts/resume-help-prompt.md) | Resume writing assistance and optimization |
-| [Prompt Builder App](prompts/prompt-builder-app-prompt.md) | AI-powered prompt builder application |
-| [Public Insurance Adjuster](prompts/public-insurance-adjuster-prompt.md) | Insurance claims adjustment and evaluation |
-| [Agent Build Brief](prompts/agent-build-brief-prompt.md) | AI agent development briefs and specifications |
-| [Questions for Prompt Refinement](prompts/questions-for-prompt-refinement-prompt.md) | Framework for improving and refining prompts |
+| [Finance Tracker ETL Pipeline](prompts/finance-tracker.prompt.md) | Automated ETL pipeline for bank statements |
+| [Normal Science App](prompts/normal-science-app.prompt.md) | Full-stack chat application with authentication |
+| [Terraform Learning Platform](prompts/terraform-learning-app.prompt.md) | Interactive infrastructure tutorials |
+| [CV Builder](prompts/cv-builder.prompt.md) | Comprehensive CV and resume builder |
+| [Resume Help](prompts/resume-help.prompt.md) | Resume writing assistance and optimization |
+| [Prompt Builder App](prompts/prompt-builder-app.prompt.md) | AI-powered prompt builder application |
+| [Public Insurance Adjuster](prompts/public-insurance-adjuster.prompt.md) | Insurance claims adjustment and evaluation |
+| [Agent Build Brief](prompts/agent-build-brief.prompt.md) | AI agent development briefs and specifications |
+| [Questions for Prompt Refinement](prompts/questions-for-prompt-refinement.prompt.md) | Framework for improving and refining prompts |
 
 ## Custom Chat Modes
 
@@ -47,7 +49,6 @@ Conversation patterns and role-based interactions for specific contexts.
 
 | Title | Description |
 | ----- | ----------- |
-| [Prompt Architect](chatmodes/prompt-architect.chatmode.md) | Advanced prompt architecture and design patterns |
 | [Job Interviewer](chatmodes/job-interviewer.chatmode.md) | Job interview preparation and practice scenarios |
 
 ## Templates
@@ -57,6 +58,7 @@ Reusable prompt components and building blocks for creating custom prompts.
 | Title | Description |
 | ----- | ----------- |
 | [Prompt Structure Template](templates/prompt-structure-template.md) | Guidelines for structuring effective AI prompts |
+| [README Structure Template](templates/readme-structure-template.md) | Template for consistent project READMEs |
 
 ## Repository Structure
 
@@ -64,24 +66,24 @@ Reusable prompt components and building blocks for creating custom prompts.
 ai-prompts/
 ├── README.md                   # This file - repository overview and documentation
 ├── prompts/                    # Task-specific prompts
-│   ├── finance-tracker-prompt.md
-│   ├── normal-science-app-prompt.md
-│   ├── cv-builder-prompt.md
-│   ├── terraform-learning-app-prompt.md
-│   ├── prompt-builder-app-prompt.md
-│   ├── public-insurance-adjuster-prompt.md
-│   ├── questions-for-prompt-refinement-prompt.md
-│   ├── resume-help-prompt.md
-│   └── agent-build-brief-prompt.md
+│   ├── finance-tracker.prompt.md
+│   ├── normal-science-app.prompt.md
+│   ├── cv-builder.prompt.md
+│   ├── terraform-learning-app.prompt.md
+│   ├── prompt-builder-app.prompt.md
+│   ├── public-insurance-adjuster.prompt.md
+│   ├── questions-for-prompt-refinement.prompt.md
+│   ├── resume-help.prompt.md
+│   └── agent-build-brief.prompt.md
 ├── instructions/               # Reusable guidelines
-│   ├── career-coach-instructions.md
-│   ├── front-end-web-designer.md
-│   └── pr-manager-instructions.md
+│   ├── career-coach.instructions.md
+│   ├── front-end-web-designer.instructions.md
+│   └── pr-manager.instructions.md
 ├── chatmodes/                  # Conversation patterns
-│   ├── prompt-architect.chatmode.md
 │   └── job-interviewer.chatmode.md
 ├── templates/                  # Prompt components
-│   └── prompt-structure-template.md
+│   ├── prompt-structure-template.md
+│   └── readme-structure-template.md
 ├── examples/                   # Sample outputs
 └── scripts/                    # Automation tools
 ```
@@ -125,4 +127,4 @@ If you find these prompts useful:
 
 ---
 
-*Last updated: January 2025*
+*Last updated: September 2025*

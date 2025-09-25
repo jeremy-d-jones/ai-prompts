@@ -3,7 +3,6 @@ description: 'Framework for improving and refining prompts through targeted ques
 mode: 'prompt'
 tags: ['prompt-engineering', 'ai', 'refinement', 'optimization', 'questions', 'analysis', 'improvement']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Basic prompt engineering', 'AI concepts']

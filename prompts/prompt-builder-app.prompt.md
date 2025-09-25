@@ -3,7 +3,6 @@ description: 'AI-powered prompt builder application for creating and managing cu
 mode: 'prompt'
 tags: ['ai', 'prompt-engineering', 'application', 'react', 'typescript', 'fullstack', 'prompt-management', 'cli']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['React', 'TypeScript', 'AI concepts', 'Prompt engineering basics', 'Node.js']

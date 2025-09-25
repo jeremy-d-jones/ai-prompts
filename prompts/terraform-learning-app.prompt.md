@@ -3,7 +3,6 @@ description: 'Interactive Terraform learning platform with gamified quests and r
 mode: 'prompt'
 tags: ['terraform', 'aws', 'iac', 'learning', 'gamification', 'react', 'typescript', 'lambda', 'dynamodb', 'cloudfront', 'devops']
 difficulty: 'advanced'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Terraform basics', 'AWS fundamentals', 'React', 'TypeScript', 'Node.js', 'DevOps concepts']

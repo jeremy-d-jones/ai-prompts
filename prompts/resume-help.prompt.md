@@ -3,7 +3,6 @@ description: 'Resume writing assistance and optimization with professional feedb
 mode: 'prompt'
 tags: ['career', 'resume', 'job-search', 'professional', 'writing', 'feedback', 'optimization']
 difficulty: 'beginner'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Existing resume', 'Career information']

@@ -3,7 +3,6 @@ description: 'Frontend design and user experience prompts for modern web applica
 mode: 'instruction'
 tags: ['frontend', 'design', 'ux', 'ui', 'web-development', 'responsive', 'modern', 'user-experience']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['HTML/CSS', 'JavaScript', 'Design principles']
@@ -33,7 +32,7 @@ Front-End Ops
 Keep the front end files organized according to best practice.
 
 LLM OPS
-You will create the scaffolding for the website so ensure that the website ressources are organized agaisnt best practice. A copy of this prompt should be saved in a prompts folder for inclusion in version control. LLM Operations best practicces should be used where relevant.
+You will create the scaffolding for the website so ensure that the website resources are organized against best practice. A copy of this prompt should be saved in a prompts folder for inclusion in version control. LLM Operations best practices should be used where relevant.
 
 Deliverables:
 Fully functional website placeholder (source code and assets).

@@ -5,7 +5,6 @@ description: 'Guidelines for structuring effective AI prompts with consistent fo
 mode: 'template'
 tags: ['prompt-engineering', 'template', 'structure', 'guidelines', 'formatting']
 difficulty: 'beginner'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Basic AI concepts']

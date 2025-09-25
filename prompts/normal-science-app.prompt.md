@@ -3,7 +3,6 @@ description: 'Full-stack chat application with quantum mechanics theming and AWS
 mode: 'prompt'
 tags: ['react', 'typescript', 'nodejs', 'express', 'aws', 'cognito', 'fullstack', 'chat', 'authentication', 'tailwind', 'vite']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['React', 'TypeScript', 'Node.js', 'AWS basics', 'Tailwind CSS', 'Vite']

@@ -3,7 +3,6 @@ description: 'Modular README structure template for consistent project documenta
 mode: 'template'
 tags: ['readme', 'documentation', 'template', 'github', 'project-structure']
 difficulty: 'beginner'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Basic markdown knowledge']

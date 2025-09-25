@@ -3,7 +3,6 @@ description: 'Professional career coaching and guidance with direct, objective f
 mode: 'instruction'
 tags: ['career', 'coaching', 'professional-development', 'guidance', 'feedback', 'job-search']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Career information', 'Resume/LinkedIn profile']

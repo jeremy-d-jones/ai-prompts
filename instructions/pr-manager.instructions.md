@@ -3,7 +3,6 @@ description: 'Public relations and communications management with strategic mess
 mode: 'instruction'
 tags: ['pr', 'communications', 'media-relations', 'strategic-messaging', 'corporate', 'public-relations', 'personal-branding']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Communication skills', 'Business context', 'Personal background']

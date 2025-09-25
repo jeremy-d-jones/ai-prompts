@@ -3,7 +3,6 @@ description: 'Insurance claims adjustment and evaluation with expert property da
 mode: 'prompt'
 tags: ['insurance', 'claims', 'adjustment', 'property', 'damage', 'assessment', 'professional', 'expert', 'legal']
 difficulty: 'intermediate'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Insurance knowledge', 'Property assessment basics', 'Legal understanding']

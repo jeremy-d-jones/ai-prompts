@@ -3,7 +3,6 @@ description: 'Comprehensive CV and resume builder with cover letter generation a
 mode: 'prompt'
 tags: ['career', 'resume', 'cv', 'cover-letter', 'job-search', 'professional', 'writing', 'formatting']
 difficulty: 'beginner'
-author: 'Jeremy D. Jones'
 version: '1.0'
 lastUpdated: '2025-01-XX'
 prerequisites: ['Basic writing skills', 'Career information']

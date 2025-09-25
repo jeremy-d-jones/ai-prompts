@@ -1,3 +1,14 @@
+---
+description: 'Modular, lightweight finance tracker ETL pipeline with plugin architecture'
+mode: 'prompt'
+tags: ['finance', 'etl', 'pdf', 'csv', 'python', 'async', 'pydantic']
+difficulty: 'intermediate'
+version: '1.0'
+lastUpdated: '2025-01-XX'
+estimatedTime: '30-60 minutes'
+useCase: 'Designing a maintainable ETL for bank statements and PDFs'
+---
+
 Prompt: Create a Modular, Lightweight Finance Tracker ETL System
 Context
 You are tasked with creating a modern, modular, and lightweight version of a comprehensive finance tracker ETL pipeline. The current system is feature-rich but has become monolithic and heavy, with 42+ dependencies and large files (some over 1000 lines). Your goal is to create a clean, maintainable architecture that preserves functionality while being much more modular and lightweight.
